@@ -1,0 +1,5 @@
+server/node_modules/*
+client/node_modules/*
+server/src/services/networking-app-ca9d6-firebase-adminsdk-fbsvc-dd2d1e05af.json
+server/src/services/firebase-admin.js
+firebase/networking-app-ca9d6-firebase-adminsdk-fbsvc-dd2d1e05af.json

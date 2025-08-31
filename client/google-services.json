@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "223754463309",
+    "project_id": "networking-app-ca9d6",
+    "storage_bucket": "networking-app-ca9d6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223754463309:android:a339df30dd6d153fd7d404",
+        "android_client_info": {
+          "package_name": "com.indian.networking.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfFcleeK_wb7oSmlVDS_-Z6Nv6gAoUtL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

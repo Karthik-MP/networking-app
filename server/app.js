@@ -6,7 +6,13 @@ import authRouter from './src/routes/authRoutes.js';
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: '*',  // Front-end URL (adjust if you're using something else)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers (for your case, Content-Type is important)
+  credentials: true, // Allow cookies or credentials if you're using them
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Define routes

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button, Switch, Text, View } from 'react-native';
-import api from '../services/api';
+// import api from '../services/api';
 
 export default function MentorshipScreen() {
     const [isMentor, setIsMentor] = useState(false);

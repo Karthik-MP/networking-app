@@ -1,6 +1,7 @@
 // import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Controller, useForm } from 'react-hook-form';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { postRequest } from '../services/AuthServices';
 // import { auth } from '../services/firebase';
 
 export default function SignupScreen({ navigation }) {
@@ -14,23 +15,22 @@ export default function SignupScreen({ navigation }) {
     const password = watch('password');
 
     const onSubmit = async (data) => {
-        const { email, password, locationUSA, locationIndia } = data;
-
         try {
-            // const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            // const user = userCredential.user;
+            const { confirmPassword, ...filteredData } = data
+            console.log(filteredData);
+            const response = postRequest('auth/signup', filteredData);
+            response.then((res) => {
+                if (res.status === 200 && res.data.success) {
+                    alert('User registered successfully!');
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'Login' }],  // Reset the stack and navigate to Home
+                    });
+                } else {
+                    alert('Registration failed. Please try again.');
+                }
+            })
 
-            // // Save extra user data in Firestore
-            // await setDoc(doc(db, 'users', user.uid), {
-            //     uid: user.uid,
-            //     email,
-            //     locationUSA,
-            //     locationIndia,
-            //     createdAt: serverTimestamp(),
-            // });
-
-            // Optional: navigate to home screen or show success message
-            // navigation.replace('Home');
         } catch (e) {
             alert(e.message);
         }
@@ -38,6 +38,7 @@ export default function SignupScreen({ navigation }) {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.header}>Sign Up</Text>
 
             {/* Email Field */}
             <Controller
@@ -129,19 +130,51 @@ export default function SignupScreen({ navigation }) {
             />
             {errors.locationIndia && <Text style={styles.error}>{errors.locationIndia.message}</Text>}
 
-            <Button title="Sign Up" onPress={handleSubmit(onSubmit)} />
+            <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
+                <Text style={styles.buttonText}>Sign Up</Text>
+            </TouchableOpacity>
+            {/* <Button title="Sign Up" onPress={handleSubmit(onSubmit)} /> */}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center', padding: 20 },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: '#f5f5f5'
+    },
+    header: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        marginBottom: 40,
+    },
     input: {
-        borderWidth: 1,
+        width: '100%',
+        height: 50,
         borderColor: '#ccc',
-        padding: 10,
+        borderWidth: 1,
         borderRadius: 8,
-        marginBottom: 10,
+        marginBottom: 15,
+        paddingLeft: 15,
+        fontSize: 16,
+        backgroundColor: '#fff',
+    },
+    button: {
+        width: '100%',
+        height: 50,
+        backgroundColor: '#4CAF50',
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 15,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
     error: {
         color: 'red',

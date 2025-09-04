@@ -3,8 +3,9 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import WelcomeScreen from '../screens/WelcomeScreen';  // Welcome Screen (auth screen)
-// import LoginScreen from '../screens/LoginScreen';  // Login Screen
+import LoginScreen from '../screens/LoginScreen';  // Login Screen
 import SignupScreen from '../screens/SignupScreen';  // Signup Screen
+import DashboardScreen from '../screens/DashboardScreen';  // Signup Screen
 
 const Stack = createStackNavigator();
 
@@ -17,15 +18,20 @@ const AuthStack = () => {
         options={{ headerShown: false }}  // Hide the header for the Welcome screen
       />
       {/* You can apply the same to other screens if needed */}
-      {/* <Stack.Screen
+      <Stack.Screen
         name="Login"
         component={LoginScreen}
         options={{ headerShown: false }}
-      /> */}
+      />
       <Stack.Screen
         name="Signup"
         component={SignupScreen}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{ headerShown: false }}  // Hide the header for the Welcome screen
       />
     </Stack.Navigator>
   );

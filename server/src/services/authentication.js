@@ -1,4 +1,5 @@
-import { auth } from './firebase.js';
+import { admin } from './firebaseAdmin.js';
+
 // Utility function to extract the token from the request
 const extractToken = (req) => {
     const authorizationHeader = req.headers.authorization;
@@ -9,6 +10,7 @@ const extractToken = (req) => {
 
 // The actual authentication middleware
 const authenticate = async (req, res, next) => {
+    // console.log(req)
     const token = extractToken(req);
     if (!token) {
         return res.status(401).json({ message: 'Authorization token missing or malformed' });
@@ -16,8 +18,9 @@ const authenticate = async (req, res, next) => {
 
     try {
         // Verify the ID token with Firebase Admin SDK
-        await auth.verifyIdToken(token).then((decodedToken) => {
-        })
+        await admin.auth().verifyIdToken(token).then((decodedToken) => {
+            req.user = decodedToken; // Attach decoded token to request object
+        });
         next();
     }
     catch (error) {

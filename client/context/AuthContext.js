@@ -25,7 +25,8 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (userData) => {
-    setUser(userData);
+    console.log('Logging in user:', { uid: userData.uid, token: userData?.stsTokenManager?.accessToken, email: userData.email });
+    setUser({ uid: userData.uid, token: userData?.stsTokenManager?.accessToken, email: userData.email });
     try {
       await AsyncStorage.setItem('user', JSON.stringify(userData)); // Save user to AsyncStorage
     } catch (error) {
@@ -42,8 +43,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getIdToken = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem('user');
+      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+      return parsedUser?.token || null;
+    } catch (error) {
+      console.error("Error getting token from AsyncStorage", error);
+      return null;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, getIdToken }}>
       {children}
     </AuthContext.Provider>
   );

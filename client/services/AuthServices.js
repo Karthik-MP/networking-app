@@ -1,23 +1,37 @@
 import axios from 'axios';
+import { auth, db } from './firebase.js';
+import Constants from 'expo-constants';
 
-const BASE_URL = 'http://149.125.55.181:3001/api/'; // Replace with your actual base URL
-// const BASE_URL = 'http://localhost:3001/api/'; // Replace with your actual base URL
+const SERVER_BASE_URL = process.env.EXPO_PUBLIC_SERVER_BASE_URL
 
-export const postRequest = async (endpoint, data) => {
-    //     // const jwtToken = await AsyncStorage.getItem('jwtToken');
-    //     // const headers = jwtToken
-    //     //     ? { Authorization: `Bearer ${jwtToken}` }
-    //     //     : {};
-    console.log(`POST Request to ${BASE_URL}${endpoint} with data:`, data);
-    try {
-        const response = await axios.post(`${BASE_URL}${endpoint}`, data, {
-            headers: {
-                'Content-Type': 'application/json', // Set the custom header here
-            },
-        });
-        return response;
-    } catch (error) {
-        console.error('Error in postRequest:', error);
-        throw error;
-    }
+export const login = async (data) => {
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
+
+  // Save extra user data in Firestore
+  await setDoc(doc(db, 'users', user.uid), {
+    uid: user.uid,
+    email,
+    locationUSA,
+    locationIndia,
+    createdAt: serverTimestamp(),
+  });
+}
+
+
+export const getRequest = async (config) => {
+  console.log(`GET Request to ${config?.url}`);
+
+  try {
+    const response = await axios.get(`${SERVER_BASE_URL}${config?.url}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: config?.token,
+      }
+    }); // ✅ uses interceptor
+    return response;
+  } catch (error) {
+    console.error('Error in getRequest:', error);
+    throw error;
+  }
 };

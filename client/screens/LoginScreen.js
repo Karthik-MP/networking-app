@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import AuthContext from '../context/AuthContext';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../services/firebase';
+import { Toast } from 'toastify-react-native';
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ const LoginScreen = ({ navigation }) => {
     // Handle login logic
     const handleLogin = async () => {
         if (email === '' || password === '') {
-            Alert.alert('Error', 'Please enter both email and password');
+            Toast.error('Please enter both email and password');
             return;
         } else {
             try {

@@ -1,11 +1,17 @@
+// api.js
 import axios from 'axios';
+import { getIdToken } from '../context/AuthContext';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3001/api'
+  baseURL: "http:/192.168.1.20:3001/api/", // e.g. 'https://your-api.com/api'
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 api.interceptors.request.use(async (config) => {
-  const token = await auth.currentUser?.getIdToken();
+  const token = await getIdToken();
+  console.log('Auth Token:', token);
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });

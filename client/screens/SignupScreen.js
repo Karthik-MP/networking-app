@@ -1,9 +1,9 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { Controller, useForm } from 'react-hook-form';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { auth } from '../services/firebase';
-
+import { auth, db } from '../services/firebase';
+import { Toast } from 'toastify-react-native'
 export default function SignupScreen({ navigation }) {
     const {
         control,
@@ -18,18 +18,25 @@ export default function SignupScreen({ navigation }) {
         try {
             const { email, password, locationUSA, locationIndia } = data
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-            
-                    // Save extra user data in Firestore
-                    await setDoc(doc(db, 'users', user.uid), {
-                        uid: user.uid,
-                        email,
-                        locationUSA,
-                        locationIndia,
-                        createdAt: serverTimestamp(),
-                    });
+            const user = userCredential.user;
+
+            // Save extra user data in Firestore
+            await setDoc(doc(db, 'users', user.uid), {
+                uid: user.uid,
+                email,
+                locationUSA,
+                locationIndia,
+                createdAt: serverTimestamp(),
+            });
+            Toast.success('Success message!')
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],  // Reset the stack and navigate to Home
+            });
+
         } catch (e) {
-            alert(e.message);
+            Toast.error('Error while Signup trying later message!')
+            console.error(e.message);
         }
     };
 

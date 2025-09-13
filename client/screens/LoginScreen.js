@@ -1,7 +1,8 @@
 import { useContext, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { postRequest } from '../services/AuthServices';
 import AuthContext from '../context/AuthContext';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../services/firebase';
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -13,20 +14,18 @@ const LoginScreen = ({ navigation }) => {
             Alert.alert('Error', 'Please enter both email and password');
             return;
         } else {
-            const response = await postRequest('auth/login', { email, password });
-            if (response.error) {
-                Alert.alert('Error', response.error);
-                return;
-            }
-            // Save token or user data as needed, e.g., in context or AsyncStorage
-            if (response.status === 200) {
-                // Assuming response contains user data and token
-                login(response.data); // Update context
+            try {
+                await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+                    const user = userCredential.user;
+                    login(user)
+                })
                 Alert.alert('Success', 'Login successful');
                 navigation.reset({
                     index: 0,
                     routes: [{ name: 'Dashboard' }],  // Reset the stack and navigate to Home
-                });; // Navigate to Dashboard or Home screen
+                });
+            } catch (error) {
+                Alert.alert('Error', error.message);
             }
         }
     };

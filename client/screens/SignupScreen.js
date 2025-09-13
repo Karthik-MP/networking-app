@@ -1,8 +1,8 @@
-// import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { Controller, useForm } from 'react-hook-form';
-import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { postRequest } from '../services/AuthServices';
-// import { auth } from '../services/firebase';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { auth } from '../services/firebase';
 
 export default function SignupScreen({ navigation }) {
     const {
@@ -16,21 +16,18 @@ export default function SignupScreen({ navigation }) {
 
     const onSubmit = async (data) => {
         try {
-            const { confirmPassword, ...filteredData } = data
-            console.log(filteredData);
-            const response = postRequest('auth/signup', filteredData);
-            response.then((res) => {
-                if (res.status === 200 && res.data.success) {
-                    alert('User registered successfully!');
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'Login' }],  // Reset the stack and navigate to Home
+            const { email, password, locationUSA, locationIndia } = data
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+            
+                    // Save extra user data in Firestore
+                    await setDoc(doc(db, 'users', user.uid), {
+                        uid: user.uid,
+                        email,
+                        locationUSA,
+                        locationIndia,
+                        createdAt: serverTimestamp(),
                     });
-                } else {
-                    alert('Registration failed. Please try again.');
-                }
-            })
-
         } catch (e) {
             alert(e.message);
         }

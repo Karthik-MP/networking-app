@@ -8,7 +8,6 @@ import { Toast } from 'toastify-react-native';
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { login } = useContext(AuthContext);
     // Handle login logic
     const handleLogin = async () => {
         if (email === '' || password === '') {
@@ -16,17 +15,15 @@ const LoginScreen = ({ navigation }) => {
             return;
         } else {
             try {
-                await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
-                    const user = userCredential.user;
-                    login(user)
-                })
-                Alert.alert('Success', 'Login successful');
+                await signInWithEmailAndPassword(auth, email, password);
+                Toast.success('Login successful');
                 navigation.reset({
                     index: 0,
                     routes: [{ name: 'Dashboard' }],  // Reset the stack and navigate to Home
                 });
             } catch (error) {
-                Alert.alert('Error', error.message);
+                Toast.error('Invalid email or password');
+                console.error('Login error:', error);
             }
         }
     };

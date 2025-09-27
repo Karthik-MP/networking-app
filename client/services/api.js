@@ -1,6 +1,6 @@
 // api.js
 import axios from 'axios';
-import { getIdToken } from '../context/AuthContext';
+import { getAccessToken } from '../context/AuthContext';
 
 const api = axios.create({
   baseURL: "http:/192.168.1.20:3001/api/", // e.g. 'https://your-api.com/api'
@@ -10,7 +10,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (config) => {
-  const token = await getIdToken();
+  const token = await getAccessToken();
   console.log('Auth Token:', token);
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;

@@ -1,61 +1,75 @@
 // context/AuthContext.js
 
-import React, { createContext, useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import { createContext, useState, useEffect } from 'react';
+import { auth } from '../services/firebase';
+import { onAuthStateChanged, getIdToken, signOut } from 'firebase/auth';
+import { AppState } from 'react-native';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Load user from AsyncStorage on initial load
+  // Listen for Firebase auth state changes
   useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem('user'); // Get user from AsyncStorage
-        if (storedUser) {
-          setUser(JSON.parse(storedUser)); // Set user state if found
-        }
-      } catch (error) {
-        console.error("Error loading user data from AsyncStorage", error);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setUser({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+        });
+      } else {
+        setUser(null);
       }
-    };
+    });
 
-    loadUserData();
+    return () => unsubscribe();
   }, []);
 
-  const login = async (userData) => {
-    console.log('Logging in user:', { uid: userData.uid, token: userData?.stsTokenManager?.accessToken, email: userData.email });
-    setUser({ uid: userData.uid, token: userData?.stsTokenManager?.accessToken, email: userData.email });
-    try {
-      await AsyncStorage.setItem('user', JSON.stringify(userData)); // Save user to AsyncStorage
-    } catch (error) {
-      console.error("Error saving user data to AsyncStorage", error);
-    }
-  };
+  // Optional: Refresh token on app resume
+  // useEffect(() => {
+  //   const handleAppStateChange = async (nextAppState) => {
+  //     if (nextAppState === 'active' && auth.currentUser) {
+  //       try {
+  //         await auth.currentUser.getIdToken(true); // Force refresh
+  //         console.log('Token refreshed on app resume');
+  //       } catch (e) {
+  //         console.error('Error refreshing token on resume', e);
+  //       }
+  //     }
+  //   };
+
+  //   const subscription = AppState.addEventListener('change', handleAppStateChange);
+  //   return () => subscription.remove();
+  // }, []);
+
+  // const login = async (userData) => {
+  //   // Login is already handled by Firebase signInWithEmailAndPassword
+  //   console.log('User logged in:', userData.email);
+  //   // No need to setUser here — onAuthStateChanged handles it
+  // };
 
   const logout = async () => {
-    setUser(null);
     try {
-      await AsyncStorage.removeItem('user'); // Remove user from AsyncStorage
+      await signOut(auth);
+      // setUser(null); // Will also be handled by onAuthStateChanged
     } catch (error) {
-      console.error("Error removing user data from AsyncStorage", error);
+      console.error("Error signing out:", error);
     }
   };
 
-  const getIdToken = async () => {
+  const getAccessToken = async () => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
-      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
-      return parsedUser?.token || null;
+      if (!auth.currentUser) return null;
+      return await getIdToken(auth.currentUser, true); // Force refresh if expired
     } catch (error) {
-      console.error("Error getting token from AsyncStorage", error);
+      console.error("Error getting access token:", error);
       return null;
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, getIdToken }}>
+    <AuthContext.Provider value={{ user, logout, getAccessToken }}>
       {children}
     </AuthContext.Provider>
   );

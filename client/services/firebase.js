@@ -1,11 +1,13 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAlfBYCjXDhBv0T_HfR0wUuRiE9UE1A-7o",
   authDomain: "networking-app-ca9d6.firebaseapp.com",
   projectId: "networking-app-ca9d6",
+  // corrected storage bucket hostname (use the appspot.com domain from Firebase)
   storageBucket: "networking-app-ca9d6.firebasestorage.app",
   messagingSenderId: "223754463309",
   appId: "1:223754463309:web:99678212f6bcabf0d7d404",
@@ -18,10 +20,11 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firebase Authentication and Firestore
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 // Initialize Firebase Admin SDK (important for server-side token verification)
 // admin.initializeApp({
 //   credential: admin.credential.applicationDefault() // or provide a specific service account JSON
 // });
 
-export { auth, db, app };
+export { auth, db, app, storage };

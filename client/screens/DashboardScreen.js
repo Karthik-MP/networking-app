@@ -1,43 +1,63 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from "react";
+import { View, FlatList, RefreshControl, ActivityIndicator } from "react-native";
+import { collection, getDocs, orderBy, limit, query, startAfter } from "firebase/firestore";
+import { db } from "../services/firebase";
+import EventCard from "../components/EventCard";
+import SkeletonCard from "../components/SkeletonCard";
 
 export default function DashboardScreen() {
-  const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState([]);
+  const [last, setLast] = useState(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const PAGE = 8;
+
+  const loadInitial = async () => {
+    setLoading(true);
+    const q = query(collection(db, "events"), orderBy("createdAt", "desc"), limit(PAGE));
+    const snap = await getDocs(q);
+    const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    setEvents(items);
+    setLast(snap.docs[snap.docs.length - 1] || null);
+    setLoading(false);
+  };
+
+  console.log(events)
+  const loadMore = async () => {
+    if (!last || loadingMore) return;
+    setLoadingMore(true);
+    const q = query(collection(db, "events"), orderBy("createdAt", "desc"), startAfter(last), limit(PAGE));
+    const snap = await getDocs(q);
+    const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    setEvents((prev) => [...prev, ...items]);
+    setLast(snap.docs[snap.docs.length - 1] || null);
+    setLoadingMore(false);
+  };
+
+  useEffect(() => { loadInitial(); }, []);
+
+  if (loading) {
+    return (
+      <View className="p-4">
+        {[...Array(4)].map((_, i) => <SkeletonCard key={i} />)}
+      </View>
+    );
+  }
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Welcome to Indian Networking</Text>
-      <Text style={styles.subtitle}>Quick Links</Text>
-
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => navigation.navigate('Communities')}>
-        <Text style={styles.cardTitle}>Communities</Text>
-        <Text>Connect by U.S. and Indian states</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => navigation.navigate('Mentorship')}>
-        <Text style={styles.cardTitle}>Mentorship</Text>
-        <Text>Find a mentor or become one</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => navigation.navigate('Events')}>
-        <Text style={styles.cardTitle}>Events</Text>
-        <Text>View upcoming meetups</Text>
-      </TouchableOpacity>
-    </ScrollView>
+    <FlatList
+      data={events}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => <EventCard event={item} />}
+      contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+      onEndReached={loadMore}
+      onEndReachedThreshold={0.5}
+      ListFooterComponent={
+        loadingMore ? <ActivityIndicator style={{ marginVertical: 12 }} /> : null
+      }
+      refreshControl={
+        <RefreshControl refreshing={loading} onRefresh={loadInitial} />
+      }
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
-  subtitle: { fontSize: 18, fontWeight: '600', marginVertical: 10 },
-  card: { padding: 20, backgroundColor: '#f1f1f1', borderRadius: 10, marginVertical: 10 },
-  cardTitle: { fontSize: 20, fontWeight: 'bold' }
-});

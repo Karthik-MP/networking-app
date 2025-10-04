@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
 import DashboardScreen from '../screens/DashboardScreen';
-import EventsScreen from '../screens/EventsScreen';
+// import EventsScreen from '../screens/EventsScreen';
 import MentorshipScreen from '../screens/MentorshipScreen';
 import ProfileStack from './ProfileStack';
 import CreateStack from './CreateStack';
@@ -70,7 +70,7 @@ export default function TabNavigator() {
           })}
         />
 
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Events"
           component={EventsScreen}
           options={({ navigation }) => ({
@@ -91,7 +91,7 @@ export default function TabNavigator() {
                 />
               ) : null,
           })}
-        />
+        /> */}
 
         {/* <Tab.Screen
           name="Create"

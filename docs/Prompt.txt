@@ -1,0 +1,69 @@
+I am building a React Native app focused on networking within the Indian community. The app allows users who are Green Card holders or on H1-B visas and hold specific job positions to post jobs they can refer candidates to. Indian students or job seekers can request referrals for job openings listed on public job platforms.
+
+Tech Stack:
+	Frontend: React Native, NativeWind (Tailwind for RN), Toaster (for error displays)
+	Backend: Node.js
+	Database: Firebase
+	
+client/
+├── app/
+├── app.json
+├── App.jsx
+├── assets/
+│   ├── avatar.jpg
+│   └── logo.png
+├── babel.config.js
+├── components/
+│   ├── Button.jsx
+│   ├── CommunityCard.js
+│   ├── EventCard.js
+│   ├── PostCard.js
+│   └── ProfileAvatar.jsx
+├── context/
+│   └── AuthContext.js
+├── navigation/
+│   ├── AuthStack.js
+│   ├── ProfileStack.js
+│   └── TabNavigator.js
+├── screens/
+│   ├── DashboardScreen.js
+│   ├── EventsScreen.js
+│   ├── LoginScreen.js
+│   ├── MentorshipScreen.js
+│   ├── ProfileScreen.js
+│   ├── SignupScreen.js
+│   ├── WelcomeScreen.js
+│   └── Profile/
+│       ├── EducationForm.jsx
+│       ├── ExperienceForm.jsx
+│       ├── InterestsForm.jsx
+│       ├── ProfileForm.jsx
+│       └── SocialLinksForm.jsx
+├── services/
+│   ├── api.js
+│   ├── AuthServices.js
+│   └── firebase.js
+├── global.css
+├── index.js
+├── metro.config.js
+├── tailwind.config.js
+├── tsconfig.json
+
+
+Bottom Tab Navigation Includes:
+	Dashboard
+	Events
+	Mentorship
+	Profile
+
+Completed Screens:
+	Login
+	Signup
+	Profile
+
+
+Now Goal for this prompt is
+
+Instructions:
+
+Given the above project details, generate reusable, modular, and visually attractive React Native components and screens using NativeWind styling. Suggest best practices and improvements to enhance user experience and maintainability. Keep components decoupled and easy to test. Prioritize visual appeal and developer efficiency.

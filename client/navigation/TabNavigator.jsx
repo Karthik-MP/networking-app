@@ -1,17 +1,17 @@
 // navigation/TabNavigator.tsx (or .jsx)
 
-import { useCallback, useState } from 'react';
-import { View, Pressable, Text } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
+import { useCallback, useState } from "react";
+import { View, Pressable, Text } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
 
-import DashboardScreen from '../screens/DashboardScreen';
+import DashboardScreen from "../screens/DashboardScreen";
 // import EventsScreen from '../screens/EventsScreen';
-import MentorshipScreen from '../screens/MentorshipScreen';
-import ProfileStack from './ProfileStack';
-import CreateStack from './CreateStack';
-import CreateMenuSheet from '../components/CreateMenuSheet';
+import MentorshipScreen from "../screens/MentorshipScreen";
+import ProfileStack from "./ProfileStack";
+import CreateStack from "./CreateStack";
+import CreateMenuSheet from "../components/CreateMenuSheet";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,12 +23,12 @@ export default function TabNavigator() {
   const closeCreate = useCallback(() => setCreateOpen(false), []);
 
   const onCreateJobReferral = useCallback(() => {
-    navigation.navigate('Create', { screen: 'JobReferralCreate' });
+    navigation.navigate("Create", { screen: "JobReferralCreate" });
     closeCreate();
   }, [navigation, closeCreate]);
 
   const onCreateEvent = useCallback(() => {
-    navigation.navigate('Create', { screen: 'EventCreate' });
+    navigation.navigate("Create", { screen: "EventCreate" });
     closeCreate();
   }, [navigation, closeCreate]);
 
@@ -36,15 +36,15 @@ export default function TabNavigator() {
     <>
       <Tab.Navigator
         screenOptions={{
-          tabBarActiveTintColor: 'tomato',
-          tabBarInactiveTintColor: 'gray',
-          headerTitleStyle: { fontSize: 16, fontWeight: 'bold' },
+          tabBarActiveTintColor: "tomato",
+          tabBarInactiveTintColor: "gray",
+          headerTitleStyle: { fontSize: 16, fontWeight: "bold" },
           headerStyle: {
-            backgroundColor: '#f8f8f8',
-            shadowColor: 'transparent',
+            backgroundColor: "#f8f8f8",
+            shadowColor: "transparent",
             height: 90,
           },
-          headerTitleAlign: 'center',
+          headerTitleAlign: "center",
         }}
       >
         <Tab.Screen
@@ -53,7 +53,7 @@ export default function TabNavigator() {
           options={({ navigation }) => ({
             tabBarIcon: ({ focused, color, size }) => (
               <Ionicons
-                name={focused ? 'home' : 'home-outline'}
+                name={focused ? "home" : "home-outline"}
                 size={size}
                 color={color}
               />
@@ -125,7 +125,13 @@ export default function TabNavigator() {
           component={CreateStack}
           options={({ navigation }) => ({
             headerShown: false,
-            tabBarIcon: ({ focused, color, size, accessibilityLabel = 'Create', disabled = false }) => (
+            tabBarIcon: ({
+              focused,
+              color,
+              size,
+              accessibilityLabel = "Create",
+              disabled = false,
+            }) => (
               <Pressable
                 onPress={openCreate}
                 disabled={disabled}
@@ -135,7 +141,7 @@ export default function TabNavigator() {
                 style={{ bottom: -1 }}
               >
                 <Ionicons
-                  name={focused ? 'add-circle' : 'add-circle-outline'}
+                  name={focused ? "add-circle" : "add-circle-outline"}
                   size={size}
                   color={color}
                 />
@@ -151,14 +157,20 @@ export default function TabNavigator() {
                 />
               ) : null,
           })}
+          listeners={{
+            tabPress: (e) => {
+              e.preventDefault();
+              openCreate();
+            },
+          }}
         />
         <Tab.Screen
-          name="Mentorship"
+          name="Jobs"
           component={MentorshipScreen}
           options={({ navigation }) => ({
             tabBarIcon: ({ focused, color, size }) => (
               <Ionicons
-                name={focused ? 'people' : 'people-outline'}
+                name={focused ? "people" : "people-outline"}
                 size={size}
                 color={color}
               />
@@ -174,6 +186,28 @@ export default function TabNavigator() {
               ) : null,
           })}
         />
+        {/* <Tab.Screen
+          name="Mentorship"
+          component={MentorshipScreen}
+          options={({ navigation }) => ({
+            tabBarIcon: ({ focused, color, size }) => (
+              <Ionicons
+                name={focused ? "people" : "people-outline"}
+                size={size}
+                color={color}
+              />
+            ),
+            headerLeft: () =>
+              navigation.canGoBack() ? (
+                <Ionicons
+                  name="chevron-back"
+                  size={24}
+                  style={{ marginLeft: 15 }}
+                  onPress={navigation.goBack}
+                />
+              ) : null,
+          })}
+        /> */}
 
         <Tab.Screen
           name="Profile"
@@ -182,7 +216,7 @@ export default function TabNavigator() {
             headerShown: false,
             tabBarIcon: ({ focused, color, size }) => (
               <Ionicons
-                name={focused ? 'person' : 'person-outline'}
+                name={focused ? "person" : "person-outline"}
                 size={size}
                 color={color}
               />
@@ -190,7 +224,6 @@ export default function TabNavigator() {
           })}
         />
       </Tab.Navigator>
-
 
       <CreateMenuSheet
         visible={createOpen}

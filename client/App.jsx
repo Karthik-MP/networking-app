@@ -19,7 +19,7 @@ function MainApp() {
   const { user } = useContext(AuthContext); // Now `user` will be defined after AuthProvider is loaded
   return (
     <NavigationContainer>
-      {user ? (
+      {true ? (
         <UserProfileProvider>
           <TabNavigator />
         </UserProfileProvider>

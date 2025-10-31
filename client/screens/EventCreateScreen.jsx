@@ -10,7 +10,6 @@ import {
   Platform,
   Modal,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm, Controller } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -261,7 +260,7 @@ export default function EventCreateScreen({ navigation }) {
 
   // ---- Submit ----
   const onSubmit = async (values) => {
-    console.log("VALID EVENT SUBMIT:", JSON.stringify(values, null, 2));
+    // console.log("VALID EVENT SUBMIT:", JSON.stringify(values, null, 2));
 
     // Required: venue per mode
     if (values.venue.mode === "online") {
@@ -324,13 +323,13 @@ export default function EventCreateScreen({ navigation }) {
   };
 
   const onInvalid = (errs) => {
-    console.log("INVALID EVENT SUBMIT:", JSON.stringify(getValues(), null, 2));
-    console.log("EVENT ERRORS:", JSON.stringify(errs, null, 2));
+    // console.log("INVALID EVENT SUBMIT:", JSON.stringify(getValues(), null, 2));
+    // console.log("EVENT ERRORS:", JSON.stringify(errs, null, 2));
     Alert.alert("Validation", "Please fix the highlighted fields.");
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <View className="flex-1 bg-white">
       <ScrollView contentContainerStyle={{ padding: 16 }}>
         <Text className="text-xl font-semibold mb-2">Create Event</Text>
         <Text className="text-gray-600 mb-4">Share meetups, functions, and knowledge sessions</Text>
@@ -603,8 +602,8 @@ export default function EventCreateScreen({ navigation }) {
         <Pressable
           disabled={isSubmitting}
           onPress={handleSubmit(onSubmit, (e) => {
-            console.log("INVALID EVENT SUBMIT:", JSON.stringify(getValues(), null, 2));
-            console.log("EVENT ERRORS:", JSON.stringify(e, null, 2));
+            // console.log("INVALID EVENT SUBMIT:", JSON.stringify(getValues(), null, 2));
+            // console.log("EVENT ERRORS:", JSON.stringify(e, null, 2));
             Alert.alert("Validation", "Please fix the highlighted fields.");
           })}
           className="h-12 rounded-2xl bg-black items-center justify-center mb-8"
@@ -614,6 +613,6 @@ export default function EventCreateScreen({ navigation }) {
           </Text>
         </Pressable>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

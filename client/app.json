@@ -18,7 +18,6 @@
       },
       "edgeToEdgeEnabled": true,
       "permissions": [
-        "android.permission.RECORD_AUDIO",
         "android.permission.RECORD_AUDIO"
       ],
       "package": "com.anonymous.client"
@@ -47,6 +46,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "beced4e0-960f-4ad1-a1f6-4326073109f4"
+      }
     }
   }
 }

@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { View, Pressable, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
 
 import DashboardScreen from "../screens/DashboardScreen";
@@ -11,11 +12,15 @@ import DashboardScreen from "../screens/DashboardScreen";
 import MentorshipScreen from "../screens/MentorshipScreen";
 import ProfileStack from "./ProfileStack";
 import CreateStack from "./CreateStack";
+import ChatStack from "./ChatStack";
+import JobsStack from "./JobsStack";
 import CreateMenuSheet from "../components/CreateMenuSheet";
+import CustomHeader from "../components/CustomHeader";
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
-export default function TabNavigator() {
+function TabNavigatorContent() {
   const navigation = useNavigation();
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -51,6 +56,7 @@ export default function TabNavigator() {
           name="Dashboard"
           component={DashboardScreen}
           options={({ navigation }) => ({
+            headerShown: false,
             tabBarIcon: ({ focused, color, size }) => (
               <Ionicons
                 name={focused ? "home" : "home-outline"}
@@ -58,15 +64,6 @@ export default function TabNavigator() {
                 color={color}
               />
             ),
-            headerLeft: () =>
-              navigation.canGoBack() ? (
-                <Ionicons
-                  name="chevron-back"
-                  size={24}
-                  style={{ marginLeft: 15 }}
-                  onPress={navigation.goBack}
-                />
-              ) : null,
           })}
         />
 
@@ -121,69 +118,31 @@ export default function TabNavigator() {
         /> */}
 
         <Tab.Screen
-          name="Create"
-          component={CreateStack}
+          name="Chats"
+          component={ChatStack}
           options={({ navigation }) => ({
             headerShown: false,
-            tabBarIcon: ({
-              focused,
-              color,
-              size,
-              accessibilityLabel = "Create",
-              disabled = false,
-            }) => (
-              <Pressable
-                onPress={openCreate}
-                disabled={disabled}
-                accessibilityRole="button"
-                accessibilityLabel={accessibilityLabel}
-                className="items-center justify-center"
-                style={{ bottom: -1 }}
-              >
-                <Ionicons
-                  name={focused ? "add-circle" : "add-circle-outline"}
-                  size={size}
-                  color={color}
-                />
-              </Pressable>
-            ),
-            headerLeft: () =>
-              navigation.canGoBack() ? (
-                <Ionicons
-                  name="chevron-back"
-                  size={24}
-                  style={{ marginLeft: 15 }}
-                  onPress={navigation.goBack}
-                />
-              ) : null,
-          })}
-          listeners={{
-            tabPress: (e) => {
-              e.preventDefault();
-              openCreate();
-            },
-          }}
-        />
-        <Tab.Screen
-          name="Jobs"
-          component={MentorshipScreen}
-          options={({ navigation }) => ({
             tabBarIcon: ({ focused, color, size }) => (
               <Ionicons
-                name={focused ? "people" : "people-outline"}
+                name={focused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline"}
                 size={size}
                 color={color}
               />
             ),
-            headerLeft: () =>
-              navigation.canGoBack() ? (
-                <Ionicons
-                  name="chevron-back"
-                  size={24}
-                  style={{ marginLeft: 15 }}
-                  onPress={navigation.goBack}
-                />
-              ) : null,
+          })}
+        />
+        <Tab.Screen
+          name="Jobs"
+          component={JobsStack}
+          options={({ navigation }) => ({
+            headerShown: false,
+            tabBarIcon: ({ focused, color, size }) => (
+              <Ionicons
+                name={focused ? "briefcase" : "briefcase-outline"}
+                size={size}
+                color={color}
+              />
+            ),
           })}
         />
         {/* <Tab.Screen
@@ -232,5 +191,30 @@ export default function TabNavigator() {
         onCreateEvent={onCreateEvent}
       />
     </>
+  );
+}
+
+export default function TabNavigator() {
+  const [createOpen, setCreateOpen] = useState(false);
+  const openCreate = useCallback(() => setCreateOpen(true), []);
+
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Main"
+        component={TabNavigatorContent}
+        options={{
+          header: () => <CustomHeader onCreatePress={openCreate} />,
+        }}
+      />
+      <Stack.Screen
+        name="Create"
+        component={CreateStack}
+        options={{
+          headerShown: false,
+          presentation: 'modal',
+        }}
+      />
+    </Stack.Navigator>
   );
 }

@@ -67,6 +67,9 @@ export default function ExperienceEditor({ visible, onSave }) {
         {fields.map((f, idx) => (
           <View key={f.id} className={`rounded-2xl p-3 mb-3`}>
             {/* Company name */}
+            <Text className={`text-sm font-semibold mb-2 ${textColor.secondary}`}>
+              Company Name
+            </Text>
             <Controller
               control={control}
               name={`experience.${idx}.company_name`}

@@ -1,15 +1,19 @@
 {
   "expo": {
-    "name": "client",
-    "slug": "client",
+    "name": "HireCircle",
+    "slug": "hirecircle",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
-    "scheme": "client",
+    "scheme": "hirecircle",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hirecircle.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -18,10 +22,9 @@
       },
       "edgeToEdgeEnabled": true,
       "permissions": [
-        "android.permission.RECORD_AUDIO",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.anonymous.client"
+      "package": "com.hirecircle.app"
     },
     "web": {
       "bundler": "metro",
@@ -47,6 +50,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "beced4e0-960f-4ad1-a1f6-4326073109f4"
+      }
     }
   }
 }

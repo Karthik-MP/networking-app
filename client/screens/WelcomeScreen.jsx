@@ -17,7 +17,7 @@ import { showToast } from "@components/toast";
 
 export default function WelcomeScreen() {
   const navigation = useNavigation();
-  const { dark, backgroundColor, textColor, border } = useTheme();
+  const { dark, backgroundColor, textColor, border, colors } = useTheme();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -96,11 +96,17 @@ export default function WelcomeScreen() {
 
         {/* Divider */}
         <View className="flex-row items-center w-full my-4">
-          <View className="flex-1 h-px bg-slate-700/80" />
+          <View
+            className="flex-1 h-px"
+            style={{ backgroundColor: colors.border }}
+          />
           <Text className={`mx-3 text-xs ${textColor.tertiary}`}>
             or continue with
           </Text>
-          <View className="flex-1 h-px bg-slate-700/80" />
+          <View
+            className="flex-1 h-px"
+            style={{ backgroundColor: colors.border }}
+          />
         </View>
 
         {/* Inputs */}
@@ -132,7 +138,7 @@ export default function WelcomeScreen() {
             <TextInput
               value={password}
               onChangeText={setPassword}
-              placeholder="••••••••"
+              placeholder="••••••••••••••••"
               placeholderTextColor={dark ? "#9ca3af" : "#6b7280"}
               className={`flex-1 text-base pr-8 ${textColor.primary}`}
               secureTextEntry={secure}

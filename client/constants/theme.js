@@ -36,8 +36,8 @@ export const LightTheme = {
 
   textColor: {
     primary: "text-slate-900",  // main headings
-    secondary: "text-slate-800",
-    tertiary: "text-slate-600",
+    secondary: "text-gray-900", // darker for better visibility
+    tertiary: "text-gray-600",  // medium gray for good contrast
     quaternary: "text-slate-500",
   },
 
@@ -82,8 +82,8 @@ export const DarkTheme = {
 
   textColor: {
     primary: "text-white",       // main headings
-    secondary: "text-gray-300",
-    tertiary: "text-gray-300",
+    secondary: "text-gray-200",  // lighter for better visibility on dark bg
+    tertiary: "text-gray-400",   // visible gray for dark mode
     quaternary: "text-white",
   },
 

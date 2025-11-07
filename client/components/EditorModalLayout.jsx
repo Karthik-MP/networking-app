@@ -8,11 +8,11 @@ export function EditorModalLayout({
   onSave,
   children,
 }) {
-  const { backgroundColor, textColor, border } = useTheme();
+  const { backgroundColor, textColor, border, colors } = useTheme();
   // console.log(backgroundColor.primary)
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <View className={`flex-1 p-4 ${backgroundColor?.primary}`}>
+    <Modal visible={visible} animationType="slide" onRequestClose={onClose} >
+      <View className="flex-1 p-4" style={{ backgroundColor: colors.background }}>
         {/* Title */}
         <Text className={`text-lg font-semibold mb-3 ${textColor.primary}`}>
           {title}

@@ -1,18 +1,30 @@
-import React from "react";
-import { View, Text } from "react-native";
-import ProfileAvatar from "../ProfileAvatar";
-import { useUserProfile } from "../../hooks/useUserProfile";
+import ProfileAvatar from "@components/ProfileAvatar";
+import { useUserProfile } from "@hooks/useUserProfile";
+import { Text, View } from "react-native";
+import { useTheme } from "@hooks/useTheme";
 
 export default function ProfileHeader() {
   const { profile } = useUserProfile();
-  const name = `${profile?.full_name?.first_name || ""} ${profile?.full_name?.last_name || ""}`.trim();
+  const { textColor, backgroundColor } = useTheme();
+  const name =
+    `${profile?.full_name?.first_name || ""} ${profile?.full_name?.last_name || ""}`.trim();
 
   return (
-    <View className="items-center mb-4">
+    <View className={`items-center mb-4 ${backgroundColor.primary}`}>
       <ProfileAvatar size={108} showCompletion />
-      <Text className="mt-3 text-xl font-semibold text-gray-900">{name || "Your Name"}</Text>
-      <Text className="text-gray-500">{profile?.email_address || ""}</Text>
-      {/* <Text className="mt-1 text-gray-700">{completion}% complete</Text> */}
+
+      {/* Name */}
+      <Text className={`mt-3 text-xl font-semibold ${textColor.primary}`}>
+        {name || "Your Name"}
+      </Text>
+
+      {/* Email */}
+      <Text className={`${textColor.secondary}`}>
+        {profile?.email_address || ""}
+      </Text>
+
+      {/* Optional completion line */}
+      {/* <Text className={`mt-1 ${textColor.tertiary}`}>{completion}% complete</Text> */}
     </View>
   );
 }

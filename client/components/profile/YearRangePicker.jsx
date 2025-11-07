@@ -1,34 +1,39 @@
-// client/components/profile/YearRangePicker.jsx
-import React from "react";
-import { View, Text, TextInput } from "react-native";
-
-const years = Array.from({length: 60}, (_,i)=>String(1980 + i));
+import { Text, TextInput, View } from "react-native";
+import { useTheme } from "@hooks/useTheme"; // ✅ new unified theme hook
 
 export default function YearRangePicker({ label, start, end, onChange }) {
+  const { dark, textColor, backgroundColor, border } = useTheme();
+
+  const placeholderColor = dark ? "#6B7280" : "#9CA3AF";
+
   return (
-    <View className="mt-1">
-      {label ? <Text className="text-gray-700 mb-1">{label}</Text> : null}
+    <View className="mt-3">
+      {label && (
+        <Text className={`text-sm font-semibold mb-2 ${textColor.secondary}`}>
+          {label}
+        </Text>
+      )}
+
       <View className="flex-row gap-3">
-        <View className="flex-1">
-          <TextInput
-            placeholder="Start Year"
-            value={start}
-            onChangeText={(t)=>onChange(t, end)}
-            keyboardType="numeric"
-            className="bg-white border border-gray-200 rounded-2xl px-4 py-3"
-            maxLength={4}
-          />
-        </View>
-        <View className="flex-1">
-          <TextInput
-            placeholder="End Year"
-            value={end}
-            onChangeText={(t)=>onChange(start, t)}
-            keyboardType="numeric"
-            className="bg-white border border-gray-200 rounded-2xl px-4 py-3"
-            maxLength={4}
-          />
-        </View>
+        {/* Start Year */}
+        <TextInput
+          placeholder="Start Year"
+          value={start}
+          onChangeText={(t) => onChange?.(t, end)}
+          keyboardType="numeric"
+          placeholderTextColor={placeholderColor}
+          className={`flex-1 rounded-2xl px-4 py-3 border ${backgroundColor.input} ${textColor.primary} ${border.primary}`}
+        />
+
+        {/* End Year */}
+        <TextInput
+          placeholder="End Year"
+          value={end}
+          onChangeText={(t) => onChange?.(start, t)}
+          keyboardType="numeric"
+          placeholderTextColor={placeholderColor}
+          className={`flex-1 rounded-2xl px-4 py-3 border ${backgroundColor.input} ${textColor.primary} ${border.primary}`}
+        />
       </View>
     </View>
   );

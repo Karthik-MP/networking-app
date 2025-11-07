@@ -1,43 +1,43 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import SectionCard from "./SectionCard";
+import { useState } from "react";
+import { Text, View } from "react-native";
+import { useTheme } from "../../hooks/useTheme"; // ✅ useTheme instead of ThemeContext
 import { useUserProfile } from "../../hooks/useUserProfile";
+import { EditorModalLayout } from "../EditorModalLayout";
 import ExperienceEditor from "./ExperienceEditor";
+import SectionCard from "./SectionCard";
 
 export default function ExperienceSection() {
-  const { profile } = useUserProfile();
+  const { profile, saveProfile } = useUserProfile();
   const [open, setOpen] = useState(false);
   const rows = profile?.experience || [];
-  const hasRows = rows.length > 0;
+  const { textColor } = useTheme();
+
+  const onSave = async (vals) => {
+    await saveProfile({ experience: vals.experience });
+    setOpen(false); // ✅ fixed onClose reference
+  };
+
   return (
     <>
-      <SectionCard
-        title="Experience"
-        right={
-          <TouchableOpacity
-            onPress={() => setOpen(true)}
-            className="px-3 py-1.5 rounded-xl bg-gray-200"
-          >
-            <Text className="text-gray-800 font-medium">
-              {hasRows ? "Edit" : "Add"}
-            </Text>
-          </TouchableOpacity>
-        }
-      >
+      <SectionCard title="Experience" onEdit={() => setOpen(true)}>
         {rows.length === 0 ? (
-          <Text className="text-gray-500">Add your experience</Text>
+          <Text className={`text-sm ${textColor.secondary}`}>
+            Add your experience
+          </Text>
         ) : (
           rows.map((ex, i) => (
             <View key={i} className="mb-3">
-              <Text className="font-semibold text-gray-900">
+              <Text className={`font-semibold text-base ${textColor.primary}`}>
                 {ex.company_name || "Company"}
               </Text>
-              <Text className="text-gray-600">
+
+              <Text className={`text-sm ${textColor.secondary}`}>
                 {ex.role || ""} • {ex.duration?.start_year || "—"}–
                 {ex.duration?.end_year || "—"}
               </Text>
+
               {!!ex.location?.country && (
-                <Text className="text-gray-500">
+                <Text className={`text-sm ${textColor.tertiary}`}>
                   {[ex.location.city, ex.location.state, ex.location.country]
                     .filter(Boolean)
                     .join(", ")}
@@ -47,7 +47,15 @@ export default function ExperienceSection() {
           ))
         )}
       </SectionCard>
-      <ExperienceEditor visible={open} onClose={() => setOpen(false)} />
+
+      <EditorModalLayout
+        visible={open}
+        title="Edit Experience"
+        onSave={onSave}
+        onClose={() => setOpen(false)}
+      >
+        <ExperienceEditor visible={open} onClose={() => setOpen(false)} />
+      </EditorModalLayout>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Text, View } from "react-native";
 import { useTheme } from "@hooks/useTheme"; 
 import { useUserProfile } from "@hooks/useUserProfile";
@@ -9,15 +9,27 @@ import SectionCard from "./SectionCard";
 export default function InterestsSection() {
   const { profile, saveProfile } = useUserProfile();
   const [open, setOpen] = useState(false);
-  const { backgroundColor, textColor } = useTheme();
+  const editorRef = useRef(null);
 
   const industries = profile?.interests?.industries || [];
   const itSub = profile?.interests?.it_sub || [];
   const hobbies = profile?.interests?.hobbies || [];
 
-  const onSave = async (vals) => {
-    await saveProfile({ interests: vals });
-    setOpen(false); // ✅ fixed undefined onClose
+  const onSave = async () => {
+    console.log("Saving Interests");
+    
+    // Get form values from the editor
+    const vals = editorRef.current ? editorRef.current() : {};
+    console.log("Form values:", vals);
+
+    await saveProfile({ 
+      interests: {
+        industries: vals.industries || [],
+        it_sub: vals.it_sub || [],
+        hobbies: vals.hobbies || []
+      }
+    });
+    setOpen(false);
   };
 
   return (
@@ -34,7 +46,7 @@ export default function InterestsSection() {
         onSave={onSave}
         onClose={() => setOpen(false)}
       >
-        <InterestsEditor visible={open} onClose={() => setOpen(false)} />
+        <InterestsEditor visible={open} onSave={editorRef} onClose={() => setOpen(false)} />
       </EditorModalLayout>
     </>
   );

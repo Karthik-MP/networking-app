@@ -1,8 +1,8 @@
 // screens/SignupScreen.jsx
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, serverTimestamp, setDoc, getDoc } from "firebase/firestore";
-import { Controller, useForm } from "react-hook-form";
 import { useTheme } from "@hooks/useTheme";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { Controller, useForm } from "react-hook-form";
 import {
     StyleSheet,
     Switch,
@@ -11,10 +11,10 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { Toast } from "toastify-react-native";
 import Dropdown from "../components/Dropdown";
 import { ScreenScroll } from "../components/layout/Screen";
 import LocationPicker from "../components/Location/LocationPicker";
+import { showToast } from "../components/toast";
 import { auth, db } from "../services/firebase";
 
 const PHONE_CODES = [
@@ -51,7 +51,7 @@ export default function SignupScreen({ navigation }) {
   const isImmigrant = watch("is_immigrant");
 
   const onSubmit = async (data) => {
-    console.log("onSubmit...")
+    console.log("onSubmit...");
     try {
       const {
         email_address,
@@ -75,15 +75,7 @@ export default function SignupScreen({ navigation }) {
 
       // Check if user document already exists in Firestore (extra safety)
       const userDocRef = doc(db, "users", user.uid);
-      const userDoc = await getDoc(userDocRef);
       
-      if (userDoc.exists()) {
-        console.log("Account already exists. Please login instead.")
-        Toast.warning("Account already exists. Please login instead.");
-        navigation.reset({ index: 0, routes: [{ name: "Welcome" }] });
-        return;
-      }
-
       const payload = {
         uid: user.uid,
         email_address,
@@ -100,22 +92,22 @@ export default function SignupScreen({ navigation }) {
       };
 
       await setDoc(userDocRef, payload, { merge: true });
-      Toast.success("Signed up successfully!");
+      showToast("success", "Signed up successfully!");
       navigation.reset({ index: 0, routes: [{ name: "Welcome" }] });
     } catch (e) {
-      console.error(e);
-      
+    //   console.error(e);
+
       // Handle specific Firebase Auth errors
       if (e.code === "auth/email-already-in-use") {
-        Toast.error("This email is already registered. Please login instead.");
+        showToast("error", "This email is already registered. Please login instead.");
       } else if (e.code === "auth/invalid-email") {
-        Toast.error("Invalid email address.");
+        showToast("error", "Invalid email address.");
       } else if (e.code === "auth/weak-password") {
-        Toast.error("Password is too weak. Use at least 6 characters.");
+        showToast("error", "Password is too weak. Use at least 6 characters.");
       } else if (e.code === "auth/network-request-failed") {
-        Toast.error("Network error. Please check your connection.");
+        showToast("error", "Network error. Please check your connection.");
       } else {
-        Toast.error("Error during signup. Please try again.");
+        showToast("error", "Error during signup. Please try again.");
       }
     }
   };

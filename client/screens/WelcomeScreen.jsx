@@ -1,8 +1,7 @@
 // screens/WelcomeScreen.jsx
-import { AUTH_ROUTES } from "@constants/routes";
 import { AntDesign, Feather } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "@hooks/useTheme";
+import { useNavigation } from "@react-navigation/native";
 import { auth } from "@services/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
@@ -14,7 +13,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { Toast } from "toastify-react-native";
+import { showToast } from "@components/toast";
 
 export default function WelcomeScreen() {
   const navigation = useNavigation();
@@ -29,15 +28,16 @@ export default function WelcomeScreen() {
 
   const onLogin = async () => {
     if (!email || !password) {
-      Toast.error("Please enter both email and password");
+      showToast("error", "Invalid email or password");
+      // showToast("error", "Please enter both email and password");
       return;
     }
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      Toast.success("Login successful");
+      showToast("success", "Login successful");
     } catch (error) {
-      Toast.error("Invalid email or password");
+      showToast("error", "Invalid email or password");
       console.error("Login error:", error);
     }
   };

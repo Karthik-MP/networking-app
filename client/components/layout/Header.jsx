@@ -1,12 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { TextInput, TouchableOpacity, View } from "react-native";
+import { TextInput, TouchableOpacity, View, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@hooks/useTheme";
+import { useUserProfile } from "@hooks/useUserProfile";
 
 export default function Header({ onCreatePress }) {
   const navigation = useNavigation();
   const { theme, dark, backgroundColor, textColor, border } = useTheme(); // ✅ useTheme instead of useContext
+  const { profile } = useUserProfile();
 
   const navigateToProfile = () => {
     navigation.navigate("Profile");
@@ -26,7 +28,21 @@ export default function Header({ onCreatePress }) {
       >
         {/* Profile Button */}
         <TouchableOpacity onPress={navigateToProfile} className="mr-2">
-          <Ionicons name="person-circle" size={36} color={theme.colors.text} />
+          {profile?.photoURL ? (
+            <Image
+              source={{ uri: profile.photoURL }}
+              className="w-9 h-9 rounded-full"
+              style={{ 
+                width: 36, 
+                height: 36, 
+                borderRadius: 18,
+                borderWidth: 2,
+                borderColor: theme.colors.border
+              }}
+            />
+          ) : (
+            <Ionicons name="person-circle" size={36} color={theme.colors.text} />
+          )}
         </TouchableOpacity>
 
         {/* Search Bar */}

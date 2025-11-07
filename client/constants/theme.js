@@ -82,12 +82,12 @@ export const DarkTheme = {
 
   textColor: {
     primary: "text-white",       // main headings
-    secondary: "text-slate-100",
-    tertiary: "text-slate-400",
-    quaternary: "text-slate-500",
+    secondary: "text-gray-300",
+    tertiary: "text-gray-300",
+    quaternary: "text-white",
   },
 
   border: {
-    primary: "border-slate-700",
+    primary: "border-gray-300",
   },
 };

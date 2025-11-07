@@ -14,7 +14,7 @@ import Select from "../Select";
 import YearRangePicker from "./YearRangePicker";
 import { useTheme } from "@hooks/useTheme";
 
-export default function EducationEditor({ visible }) {
+export default function EducationEditor({ visible, onSave }) {
   const { profile } = useUserProfile();
   const { dark, backgroundColor, textColor, border } = useTheme(); // ✅ unified theme access
 
@@ -22,7 +22,7 @@ export default function EducationEditor({ visible }) {
 
   const baseInputClass = `border rounded-2xl px-4 py-3 mb-2 ${backgroundColor.input} ${border.primary}`;
 
-  const { control, setValue, reset, watch } = useForm({
+  const { control, setValue, reset, watch, getValues } = useForm({
     defaultValues: {
       education: profile?.education?.length ? profile.education : [],
     },
@@ -41,6 +41,14 @@ export default function EducationEditor({ visible }) {
       });
     }
   }, [visible, profile, reset]);
+
+  // Expose getValues to parent via onSave prop
+  useEffect(() => {
+    if (onSave && visible) {
+      // This allows parent to call the function to get current form data
+      onSave.current = () => getValues();
+    }
+  }, [onSave, getValues, visible]);
 
   const addRow = () =>
     append({
@@ -61,7 +69,7 @@ export default function EducationEditor({ visible }) {
         {fields.length === 0 && (
           <TouchableOpacity
             onPress={addRow}
-            className={`mb-4 px-4 py-3 rounded-2xl self-start`}
+            className={`mb-4 px-4 py-3 rounded-2xl self-start border ${border.primary} ${backgroundColor.cardPrimary}`}
           >
             <Text className={`font-medium ${textColor.primary}`}>
               Add Education
@@ -70,10 +78,7 @@ export default function EducationEditor({ visible }) {
         )}
 
         {fields.map((f, idx) => (
-          <View
-            key={f.id}
-            className={`rounded-2xl p-3 mb-3`}
-          >
+          <View key={f.id} className={`rounded-2xl p-3 mb-3`}>
             {/* Degree */}
             <Select
               label="Degree"

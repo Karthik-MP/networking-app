@@ -28,14 +28,14 @@ const INDUSTRIES = [
   { id: "education", label: "Education" },
 ];
 
-export default function ExperienceEditor({ visible }) {
+export default function ExperienceEditor({ visible, onSave }) {
   const { profile } = useUserProfile();
   const { dark, backgroundColor, textColor, border } = useTheme(); // ✅ unified theme
 
   const placeholderColor = dark ? "#6B7280" : "#9CA3AF";
   const baseInputClass = `border rounded-2xl px-4 py-3 mb-2 ${backgroundColor.input} ${border.primary}`;
 
-  const { control, setValue, reset, watch } = useForm({
+  const { control, setValue, reset, watch, getValues } = useForm({
     defaultValues: { experience: profile?.experience || [] },
   });
 
@@ -50,6 +50,14 @@ export default function ExperienceEditor({ visible }) {
     }
   }, [visible, profile?.experience, reset]);
 
+  // Expose getValues to parent via onSave prop
+  useEffect(() => {
+    if (onSave && visible) {
+      // This allows parent to call the function to get current form data
+      onSave.current = () => getValues();
+    }
+  }, [onSave, getValues, visible]);
+
   return (
     <ScreenScroll
       contentContainerStyle={{ padding: 12 }}
@@ -57,10 +65,7 @@ export default function ExperienceEditor({ visible }) {
     >
       <View className="flex-1">
         {fields.map((f, idx) => (
-          <View
-            key={f.id}
-            className={`rounded-2xl p-3 mb-3`}
-          >
+          <View key={f.id} className={`rounded-2xl p-3 mb-3`}>
             {/* Company name */}
             <Controller
               control={control}

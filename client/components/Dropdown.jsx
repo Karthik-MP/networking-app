@@ -68,7 +68,7 @@ export default function Dropdown({
           {selectedLabel || placeholder}
         </Text>
         <AntDesign
-          name="arrowright"
+          name="arrow-right"
           size={16}
           color={dark ? "#94a3b8" : "#475569"}
         />

@@ -65,7 +65,7 @@ export default function Select({
       {/* Dropdown list */}
       {open && (
         <View
-          className={`absolute top-[100%] left-0 right-0 mt-2 z-50 rounded-xl border shadow-lg ${backgroundColor.cardPrimary} ${border.primary}`}
+          className={`absolute top-[100%] left-0 right-0 mt-2 z-50 rounded-xl border shadow-lg ${backgroundColor.primary} ${border.primary}`}
         >
           <ScrollView style={{ maxHeight: 220 }} nestedScrollEnabled>
             {items.map((item) => {

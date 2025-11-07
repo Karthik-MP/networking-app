@@ -51,9 +51,10 @@
     "experiments": {
       "typedRoutes": true
     },
+    "owner": "karthik_mp",
     "extra": {
       "eas": {
-        "projectId": "beced4e0-960f-4ad1-a1f6-4326073109f4"
+        "projectId": "fe000782-e6ff-4f4b-a917-2f0447e2686e"
       }
     }
   }

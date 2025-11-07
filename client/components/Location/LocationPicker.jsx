@@ -1,61 +1,89 @@
-// client/components/profile/LocationPicker.jsx
-import React, { useMemo } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { useTheme } from "@hooks/useTheme";
+import { useMemo } from "react";
 import { Controller } from "react-hook-form";
-import Dropdown from "../Dropdown"; // <- same Dropdown you already have
+import { Text, TextInput, View } from "react-native";
+import Select from "../Select";
+// ───────────────────────────────────────────────────────────
+// Static data
+// ───────────────────────────────────────────────────────────
+const COUNTRIES = [
+  { id: "US", label: "United States" },
+  { id: "IN", label: "India" },
+  { id: "CA", label: "Canada" },
+  { id: "UK", label: "United Kingdom" },
+];
 
-/**
- * props:
- * - control, setValue, watch  -> from react-hook-form
- * - namePrefix                -> e.g., "native_location" or "foreign_residence"
- * - label                     -> section title (string)
- * - required                  -> boolean (default true)
- */
+const STATES_BY_COUNTRY = {
+  US: ["New York", "California", "Texas", "Massachusetts"],
+  IN: ["Karnataka", "Maharashtra", "Tamil Nadu", "Telangana"],
+  CA: ["Ontario", "Quebec", "British Columbia"],
+  UK: ["England", "Scotland", "Wales"],
+};
+
 export default function LocationPicker({
   control,
   setValue,
   watch,
   namePrefix = "native_location",
   label = "Location",
-  required = true
+  required = true,
+  containerClassName,
+  labelClassName,
+  inputWrapperClassName,
+  inputTextClassName,
+  placeholderTextColor,
 }) {
-  const countries = [
-    { id: "US", label: "United States" },
-    { id: "IN", label: "India" },
-    { id: "CA", label: "Canada" },
-    { id: "UK", label: "United Kingdom" },
-  ];
-  const statesByCountry = {
-    US: ["New York", "California", "Texas", "Massachusetts"],
-    IN: ["Karnataka", "Maharashtra", "Tamil Nadu", "Telangana"],
-    CA: ["Ontario", "Quebec", "British Columbia"],
-    UK: ["England", "Scotland", "Wales"],
-  };
+  const { dark, backgroundColor, textColor, border } = useTheme();
+
+  // ─────────────────────────────────────────────────────────
+  // Styling defaults (now theme-based)
+  // ─────────────────────────────────────────────────────────
+  const inputWrapClass =
+    inputWrapperClassName ??
+    `rounded-xl px-4 border mb-2 ${backgroundColor.input} ${border.primary}`;
+
+  const inputTextClass = inputTextClassName ?? `text-base ${textColor.primary}`;
+
+  const labelTextClass =
+    labelClassName ?? `text-sm font-semibold mb-2 ${textColor.secondary}`;
+
+  const placeholderColor =
+    placeholderTextColor ?? (dark ? "#6B7280" : "#9CA3AF");
+
+  // ─────────────────────────────────────────────────────────
+  // Dependent select data
+  // ─────────────────────────────────────────────────────────
   const selectedCountry = watch?.(`${namePrefix}.country`);
-  const states = useMemo(
-    () => (selectedCountry ? statesByCountry[selectedCountry] || [] : []),
-    [selectedCountry, statesByCountry]
-  );
 
-  const requiredMsg = (f) => (required ? { required: `${f} is required` } : {});
+  const stateItems = useMemo(() => {
+    if (!selectedCountry) return [];
+    const states = STATES_BY_COUNTRY[selectedCountry] || [];
+    return states.map((s) => ({ id: s, label: s }));
+  }, [selectedCountry]);
 
+  const requiredRule = (field) =>
+    required ? { required: `${field} is required` } : {};
+
+  // ─────────────────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────────────────
   return (
-    <View style={{ marginTop: 12, marginBottom: 6 }}>
-      <Text style={styles.sectionTitle}>{label}</Text>
+    <View className={`mt-3 ${containerClassName || ""}`}>
+      <Text className={labelTextClass}>{label}</Text>
 
       {/* Country */}
       <Controller
         control={control}
         name={`${namePrefix}.country`}
-        rules={requiredMsg("Country")}
+        rules={requiredRule("Country")}
         render={({ field: { value } }) => (
-          <Dropdown
+          <Select
             label="Country"
-            items={countries}
+            items={COUNTRIES}
             value={value}
             onSelect={(v) => {
               setValue(`${namePrefix}.country`, v);
-              setValue(`${namePrefix}.state`, ""); // reset state if country changes
+              setValue(`${namePrefix}.state`, ""); // reset state when country changes
             }}
           />
         )}
@@ -65,13 +93,13 @@ export default function LocationPicker({
       <Controller
         control={control}
         name={`${namePrefix}.state`}
-        rules={requiredMsg("State")}
+        rules={requiredRule("State")}
         render={({ field: { value } }) => (
-          <Dropdown
+          <Select
             label="State"
-            disabled={!selectedCountry}
-            items={states.map((s) => ({ id: s, label: s }))}
+            items={stateItems}
             value={value}
+            disabled={!selectedCountry}
             onSelect={(v) => setValue(`${namePrefix}.state`, v)}
           />
         )}
@@ -81,57 +109,45 @@ export default function LocationPicker({
       <Controller
         control={control}
         name={`${namePrefix}.city`}
-        rules={requiredMsg("City")}
+        rules={requiredRule("City")}
         render={({ field: { value, onChange } }) => (
-          <TextInput
-            placeholder="City"
-            value={value}
-            onChangeText={onChange}
-            style={styles.input}
-          />
+          <View className={inputWrapClass}>
+            <TextInput
+              placeholder="City"
+              value={value}
+              onChangeText={onChange}
+              className={inputTextClass}
+              placeholderTextColor={placeholderColor}
+              autoCapitalize="words"
+            />
+          </View>
         )}
       />
 
-      {/* Zip */}
+      {/* Zip / Postal Code */}
       <Controller
         control={control}
         name={`${namePrefix}.zip`}
         rules={{
-          ...requiredMsg("Zip/Postal code"),
+          ...requiredRule("Zip/Postal code"),
           pattern: {
             value: /^[A-Za-z0-9-\s]{3,10}$/,
             message: "Invalid zip/postal code",
           },
         }}
         render={({ field: { value, onChange } }) => (
-          <TextInput
-            placeholder="Zip / Postal Code"
-            value={value}
-            onChangeText={onChange}
-            style={styles.input}
-          />
+          <View className={inputWrapClass}>
+            <TextInput
+              placeholder="Zip / Postal Code"
+              value={value}
+              onChangeText={onChange}
+              className={inputTextClass}
+              placeholderTextColor={placeholderColor}
+              autoCapitalize="characters"
+            />
+          </View>
         )}
       />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#374151",
-    marginBottom: 8,
-  },
-  input: {
-    width: "100%",
-    height: 48,
-    borderColor: "#e5e7eb",
-    borderWidth: 1,
-    borderRadius: 12,
-    marginBottom: 10,
-    paddingHorizontal: 14,
-    fontSize: 16,
-    backgroundColor: "#fff",
-  },
-});

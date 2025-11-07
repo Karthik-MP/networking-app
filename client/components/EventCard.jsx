@@ -1,16 +1,20 @@
-import React, { useContext, useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { View, Text, Image, Pressable, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import AuthContext from "../context/AuthContext";
+import { useTheme } from "@hooks/useTheme";
+import AuthContext from "@contexts/AuthContext";
 import { registerForEvent, reactToEvent } from "../services/eventService";
 import { onSnapshot, doc } from "firebase/firestore";
-import { db } from "../services/firebase";
+import { db } from "@services/firebase";
 
 export default function EventCard({ event }) {
-  const { user } = useContext(AuthContext) || {};
+  const { theme } = React.useContext(AuthContext) ?? {};
+  const { dark, backgroundColor, textColor, border } = useTheme();
+
+  const { user } = React.useContext(AuthContext) || {};
   const [liveEvent, setLiveEvent] = useState(event);
 
-  // Live updates (metrics)
+  // Live updates (Firebase snapshot)
   useEffect(() => {
     const unsub = onSnapshot(doc(db, "events", event.id), (snap) => {
       if (snap.exists()) setLiveEvent({ id: snap.id, ...snap.data() });
@@ -19,12 +23,16 @@ export default function EventCard({ event }) {
   }, [event.id]);
 
   const firstPoster = liveEvent.posters?.[0];
+
   const dateStr = useMemo(() => {
     try {
       const d = liveEvent.eventAt?.toDate
         ? liveEvent.eventAt.toDate()
         : new Date(liveEvent.eventAt);
-      return `${d.toDateString()} • ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} ${liveEvent.timezone}`;
+      return `${d.toDateString()} • ${d.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })} ${liveEvent.timezone}`;
     } catch {
       return "";
     }
@@ -53,7 +61,10 @@ export default function EventCard({ event }) {
   };
 
   return (
-    <View className="bg-white rounded-2xl mb-4 border border-gray-200">
+    <View
+      className={`rounded-2xl mb-4 border ${backgroundColor.cardPrimary} ${border.primary}`}
+    >
+      {/* Poster image */}
       {firstPoster ? (
         <Image
           source={{ uri: firstPoster }}
@@ -65,80 +76,93 @@ export default function EventCard({ event }) {
           }}
         />
       ) : (
-        <View className="w-full h-40 bg-gray-100 rounded-t-2xl items-center justify-center">
-          <Ionicons name="image-outline" size={28} color="#9ca3af" />
+        <View
+          className={`w-full h-40 rounded-t-2xl items-center justify-center ${backgroundColor.cardSecondary}`}
+        >
+          <Ionicons
+            name="image-outline"
+            size={28}
+            color={dark ? "#9ca3af" : "#64748b"}
+          />
         </View>
       )}
 
+      {/* Card content */}
       <View className="p-4">
-        <Text className="text-lg font-semibold mb-1">{liveEvent.name}</Text>
-        <Text className="text-gray-600 mb-2">{dateStr}</Text>
+        <Text className={`text-lg font-semibold mb-1 ${textColor.primary}`}>
+          {liveEvent.name}
+        </Text>
+        <Text className={`mb-2 ${textColor.tertiary}`}>{dateStr}</Text>
 
-        <Text className="text-gray-700 mb-1">
+        <Text className={`mb-1 ${textColor.secondary}`}>
           {liveEvent.venue?.mode === "online"
             ? `Online • ${liveEvent.venue?.meetingLink?.replace(/^https?:\/\//, "")}`
             : `Venue • ${liveEvent.venue?.location?.label}`}
         </Text>
 
-        <Text className="text-gray-600 mb-3">
+        <Text className={`mb-3 ${textColor.tertiary}`}>
           Posted by {liveEvent.createdBy?.displayName || "Someone"}
         </Text>
 
-        {/* CTA row */}
+        {/* Reaction row */}
         <View className="flex-row items-center justify-between">
           <View className="flex-row gap-3">
-            <Pressable
-              onPress={() => doReact("like")}
-              className="flex-row items-center gap-1 px-3 py-2 rounded-xl bg-gray-100"
-            >
-              <Ionicons name="thumbs-up-outline" size={18} color="#111827" />
-              <Text>{liveEvent.metrics?.reactions?.like || 0}</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => doReact("insightful")}
-              className="flex-row items-center gap-1 px-3 py-2 rounded-xl bg-gray-100"
-            >
-              <Ionicons name="bulb-outline" size={18} color="#111827" />
-              <Text>{liveEvent.metrics?.reactions?.insightful || 0}</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => doReact("interested")}
-              className="flex-row items-center gap-1 px-3 py-2 rounded-xl bg-gray-100"
-            >
-              <Ionicons name="eye-outline" size={18} color="#111827" />
-              <Text>{liveEvent.metrics?.reactions?.interested || 0}</Text>
-            </Pressable>
+            {[
+              { type: "like", icon: "thumbs-up-outline" },
+              { type: "insightful", icon: "bulb-outline" },
+              { type: "interested", icon: "eye-outline" },
+            ].map((r) => (
+              <Pressable
+                key={r.type}
+                onPress={() => doReact(r.type)}
+                className={`flex-row items-center gap-1 px-3 py-2 rounded-xl ${backgroundColor.cardSecondary}`}
+              >
+                <Ionicons
+                  name={r.icon}
+                  size={18}
+                  color={dark ? "#f1f5f9" : "#111827"}
+                />
+                <Text className={textColor.primary}>
+                  {liveEvent.metrics?.reactions?.[r.type] || 0}
+                </Text>
+              </Pressable>
+            ))}
           </View>
 
           <View className="flex-row gap-2">
-            {/* Dummy buttons for now */}
             <Pressable
               onPress={() => Alert.alert("Comments", "Coming soon")}
-              className="px-3 py-2 rounded-xl bg-gray-100"
+              className={`px-3 py-2 rounded-xl ${backgroundColor.cardSecondary}`}
             >
-              <Text>Comments</Text>
+              <Text className={textColor.secondary}>Comments</Text>
             </Pressable>
             <Pressable
               onPress={() => Alert.alert("Share", "Share sheet coming soon")}
-              className="px-3 py-2 rounded-xl bg-gray-100"
+              className={`px-3 py-2 rounded-xl ${backgroundColor.cardSecondary}`}
             >
-              <Text>Share</Text>
+              <Text className={textColor.secondary}>Share</Text>
             </Pressable>
           </View>
         </View>
 
-        {/* Register */}
+        {/* Register button */}
         <View className="mt-3 flex-row items-center justify-between">
-          <Text className="text-gray-700">
+          <Text className={textColor.secondary}>
             Spots left: {spotsLeft}/{liveEvent.capacity}
           </Text>
           <Pressable
             disabled={spotsLeft <= 0}
             onPress={onRegister}
-            className={`px-4 py-2 rounded-xl ${spotsLeft > 0 ? "bg-black" : "bg-gray-300"}`}
+            className={`px-4 py-2 rounded-xl ${
+              spotsLeft > 0
+                ? backgroundColor.buttonPrimary
+                : backgroundColor.buttonSecondary
+            }`}
           >
             <Text
-              className={`font-medium ${spotsLeft > 0 ? "text-white" : "text-gray-600"}`}
+              className={`font-medium ${
+                spotsLeft > 0 ? "text-white" : textColor.tertiary
+              }`}
             >
               {spotsLeft > 0 ? "Register" : "Full"}
             </Text>

@@ -22,7 +22,7 @@ export default function DashboardScreen() {
     setLoading(false);
   };
 
-  console.log(events)
+  // console.log(events)
   const loadMore = async () => {
     if (!last || loadingMore) return;
     setLoadingMore(true);

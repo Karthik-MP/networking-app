@@ -1,44 +1,52 @@
-import { useContext } from "react";
-import { AuthProvider } from "./context/AuthContext"; // Import your Auth context
-import AuthStack from "./navigation/AuthStack"; // Your auth flow stack (Welcome, Login, etc.)
-import AuthContext from "./context/AuthContext"; // Import your AuthContext
+// App.jsx
+import AuthContext, { AuthProvider } from "@contexts/AuthContext";
+import {
+  ThemeProvider as AppThemeProvider,
+  ThemeContext,
+} from "@contexts/ThemeContext";
+import { UserProfileProvider } from "@hooks/useUserProfile";
+import AuthStack from "@navigations/AuthStack";
+import TabNavigator from "@navigations/TabNavigator";
 import { NavigationContainer } from "@react-navigation/native";
-import ToastManager, { Toast } from "toastify-react-native";
+import { useContext } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import ToastManager from "toastify-react-native";
 import "./global.css";
-import TabNavigator from "./navigation/TabNavigator";
-import { UserProfileProvider } from "./hooks/useUserProfile";
+
 export default function App() {
   return (
-    <AuthProvider>
-      <MainApp />
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <AppThemeProvider>
+          <UserProfileProvider>
+            <MainApp />
+          </UserProfileProvider>
+        </AppThemeProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
 
 function MainApp() {
-  const { user } = useContext(AuthContext); // Now `user` will be defined after AuthProvider is loaded
+  const { user } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
+
   return (
-    <NavigationContainer>
-      {user ? (
-        <UserProfileProvider>
-          <TabNavigator />
-        </UserProfileProvider>
-      ) : (
-        <AuthStack />
-      )}
+    <>
+      <NavigationContainer theme={theme}>
+        {/* <TabNavigator /> */}
+        {user ? <TabNavigator /> : <AuthStack />}
+      </NavigationContainer>
+
       <ToastManager
         iconSize={12}
         style={{
-          width: "70%",
-          height: 60,
-          position: "absolute",
-          right: 10,
-          fontSize: 12,
+          position: "bottom",
+          backgroundColor: "#4a4a4a",
+          textColor: "#fff",
         }}
-        textStyle={{
-          fontSize: 6,
-        }}
+        textStyle={{ fontSize: 6 }}
       />
-    </NavigationContainer>
+    </>
   );
 }

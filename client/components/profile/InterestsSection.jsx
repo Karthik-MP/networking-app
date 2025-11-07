@@ -1,41 +1,72 @@
-import React, { useState } from "react";
-import { View, Text } from "react-native";
-import SectionCard from "./SectionCard";
-import { useUserProfile } from "../../hooks/useUserProfile";
+import { useState } from "react";
+import { Text, View } from "react-native";
+import { useTheme } from "@hooks/useTheme"; 
+import { useUserProfile } from "@hooks/useUserProfile";
+import { EditorModalLayout } from "../EditorModalLayout";
 import InterestsEditor from "./InterestsEditor";
+import SectionCard from "./SectionCard";
 
 export default function InterestsSection() {
-  const { profile } = useUserProfile();
+  const { profile, saveProfile } = useUserProfile();
   const [open, setOpen] = useState(false);
-  const ind = profile?.interests?.industries || [];
-  const it  = profile?.interests?.it_sub || [];
-  const hob = profile?.interests?.hobbies || [];
+  const { backgroundColor, textColor } = useTheme();
+
+  const industries = profile?.interests?.industries || [];
+  const itSub = profile?.interests?.it_sub || [];
+  const hobbies = profile?.interests?.hobbies || [];
+
+  const onSave = async (vals) => {
+    await saveProfile({ interests: vals });
+    setOpen(false); // ✅ fixed undefined onClose
+  };
 
   return (
     <>
       <SectionCard title="Interests" onEdit={() => setOpen(true)}>
-        <Row label="Industries" values={ind} />
-        <Row label="IT"         values={it} />
-        <Row label="Hobbies"    values={hob} />
+        <Row label="Industries" values={industries} />
+        <Row label="IT" values={itSub} />
+        <Row label="Hobbies" values={hobbies} />
       </SectionCard>
-      <InterestsEditor visible={open} onClose={() => setOpen(false)} />
+
+      <EditorModalLayout
+        visible={open}
+        title="Edit Interests"
+        onSave={onSave}
+        onClose={() => setOpen(false)}
+      >
+        <InterestsEditor visible={open} onClose={() => setOpen(false)} />
+      </EditorModalLayout>
     </>
   );
 }
 
-const Row = ({ label, values }) => (
-  <View className="mb-2">
-    <Text className="text-gray-500">{label}</Text>
-    {values?.length ? (
-      <View className="flex-row flex-wrap gap-2 mt-1">
-        {values.map((v) => (
-          <View key={v.id || v} className="px-3 py-1.5 rounded-full bg-white border border-gray-200">
-            <Text className="text-gray-800">{v.label || v}</Text>
-          </View>
-        ))}
-      </View>
-    ) : (
-      <Text className="text-gray-400 mt-1">—</Text>
-    )}
-  </View>
-);
+const Row = ({ label, values }) => {
+  const { backgroundColor, textColor } = useTheme();
+
+  return (
+    <View className="mb-2">
+      <Text className={`text-sm font-semibold ${textColor.secondary}`}>
+        {label || ""}
+      </Text>
+
+      {values?.length > 0 ? (
+        <View className="flex-row flex-wrap gap-2 mt-1">
+          {values.map((v) => (
+            <View
+              key={v.id || v}
+              className={`px-3 py-1.5 rounded-full ${backgroundColor.cardSecondary}`}
+            >
+              <Text className={`text-sm ${textColor.primary}`}>
+                {v.label || v}
+              </Text>
+            </View>
+          ))}
+        </View>
+      ) : (
+        <Text className={`text-xs italic mt-1 ${textColor.tertiary}`}>
+          None added
+        </Text>
+      )}
+    </View>
+  );
+};

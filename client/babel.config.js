@@ -7,6 +7,22 @@ module.exports = function (api) {
         ],
         plugins: [
             'react-native-worklets/plugin',
+            [
+                'module-resolver',
+                {
+                    root: ['./'],
+                    alias: {
+                        '@assets': './assets',
+                        '@components': './components',
+                        '@contexts': './contexts',
+                        '@screens': './screens',
+                        '@navigations': './navigations',
+                        '@hooks': './hooks',
+                        '@constants': './constants',
+                        '@services': './services',
+                    },
+                },
+            ],
         ],
     };
 };

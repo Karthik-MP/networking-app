@@ -26,29 +26,6 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  // Optional: Refresh token on app resume
-  // useEffect(() => {
-  //   const handleAppStateChange = async (nextAppState) => {
-  //     if (nextAppState === 'active' && auth.currentUser) {
-  //       try {
-  //         await auth.currentUser.getIdToken(true); // Force refresh
-  //         console.log('Token refreshed on app resume');
-  //       } catch (e) {
-  //         console.error('Error refreshing token on resume', e);
-  //       }
-  //     }
-  //   };
-
-  //   const subscription = AppState.addEventListener('change', handleAppStateChange);
-  //   return () => subscription.remove();
-  // }, []);
-
-  // const login = async (userData) => {
-  //   // Login is already handled by Firebase signInWithEmailAndPassword
-  //   console.log('User logged in:', userData.email);
-  //   // No need to setUser here — onAuthStateChanged handles it
-  // };
-
   const logout = async () => {
     try {
       await signOut(auth);

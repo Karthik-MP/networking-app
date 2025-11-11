@@ -30,7 +30,7 @@ export const LightTheme = {
     cardPrimary: "bg-white",       // main cards
     cardSecondary: "bg-slate-100", // subtle cards
     buttonPrimary: "bg-violet-600",
-    buttonSecondary: "bg-slate-200",
+    buttonSecondary: "bg-slate-300",
     input: "bg-white",
   },
 
@@ -39,6 +39,7 @@ export const LightTheme = {
     secondary: "text-gray-900", // darker for better visibility
     tertiary: "text-gray-600",  // medium gray for good contrast
     quaternary: "text-slate-500",
+    textDark: "text-white"
   },
 
   border: {
@@ -76,7 +77,7 @@ export const DarkTheme = {
     cardPrimary: "bg-slate-900",   // main card (login block)
     cardSecondary: "bg-slate-800", // subtle cards
     buttonPrimary: "bg-violet-600",
-    buttonSecondary: "bg-slate-800",
+    buttonSecondary: "bg-gray-200",
     input: "bg-slate-900",
   },
 
@@ -85,6 +86,7 @@ export const DarkTheme = {
     secondary: "text-gray-200",  // lighter for better visibility on dark bg
     tertiary: "text-gray-400",   // visible gray for dark mode
     quaternary: "text-white",
+    textDark: "text-black"
   },
 
   border: {

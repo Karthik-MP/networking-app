@@ -12,7 +12,7 @@ export default function Select({
   disabled = false,
   containerClassName,
 }) {
-  const { dark, backgroundColor, textColor, border } = useTheme(); // ✅ useTheme integration
+  const { dark, backgroundColor, textColor, border, colors } = useTheme(); // ✅ useTheme integration
   const [open, setOpen] = useState(false);
 
   const selectedItem = useMemo(
@@ -27,6 +27,7 @@ export default function Select({
     setOpen(false);
   };
 
+  // console.log(backgroundColor.primary)
   return (
     <View className={`relative ${containerClassName ?? "w-full mb-3"}`}>
       {/* Label */}
@@ -41,7 +42,7 @@ export default function Select({
         disabled={disabled}
         onPress={() => !disabled && setOpen((prev) => !prev)}
         activeOpacity={0.8}
-        className={`flex-row items-center justify-between rounded-xl border px-4 py-3 ${backgroundColor.input} ${border.primary} ${
+        className={`flex-row items-center justify-between rounded-xl border px-4 py-3 ${border.primary} ${
           disabled ? "opacity-60" : ""
         }`}
       >
@@ -65,7 +66,11 @@ export default function Select({
       {/* Dropdown list */}
       {open && (
         <View
-          className={`absolute top-[100%] left-0 right-0 mt-2 z-50 rounded-xl border shadow-lg ${backgroundColor.primary} ${border.primary}`}
+          className="absolute top-[100%] left-0 right-0 mt-2 z-50 rounded-xl border shadow-lg"
+          style={{
+            backgroundColor: colors.card,
+            borderColor: colors.border,
+          }}
         >
           <ScrollView style={{ maxHeight: 220 }} nestedScrollEnabled>
             {items.map((item) => {
@@ -74,9 +79,16 @@ export default function Select({
                 <TouchableOpacity
                   key={String(item.id)}
                   onPress={() => handleSelect(item.id)}
-                  className={`px-4 py-3 ${
-                    isActive ? (dark ? "bg-slate-800" : "bg-gray-100") : ""
-                  }`}
+                  style={{
+                    backgroundColor: isActive
+                      ? dark
+                        ? "#1e293b"
+                        : "#f3f4f6"
+                      : dark
+                      ? "#020617"
+                      : "#ffffff",
+                  }}
+                  className="px-4 py-3"
                 >
                   <Text
                     className={`text-base ${

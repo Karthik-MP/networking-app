@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { View, FlatList, RefreshControl, ActivityIndicator } from "react-native";
-import { collection, getDocs, orderBy, limit, query, startAfter } from "firebase/firestore";
-import { db } from "../services/firebase";
+import { collection, getDocs, limit, orderBy, query, startAfter } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, RefreshControl, View } from "react-native";
 import EventCard from "../components/EventCard";
 import SkeletonCard from "../components/SkeletonCard";
+import { db } from "../services/firebase";
 
 export default function DashboardScreen() {
   const [loading, setLoading] = useState(true);

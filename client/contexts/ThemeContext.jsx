@@ -1,13 +1,13 @@
-import React, {
+import { DarkTheme, LightTheme } from "@constants/theme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
   createContext,
-  useMemo,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { Appearance } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { LightTheme, DarkTheme } from "@constants/theme";
 
 const STORAGE_KEY = "app_theme"; // 'light' | 'dark' | 'system'
 

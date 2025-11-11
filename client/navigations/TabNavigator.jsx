@@ -7,10 +7,10 @@ import { APP_ROUTES } from "@constants/routes";
 
 import Header from "@components/layout/Header";
 import DashboardScreen from "@screens/DashboardScreen";
-import MentorshipScreen from "@screens/MentorshipScreen";
 import ProfileScreen from "@screens/ProfileScreen";
 import CreateMenuSheet from "../components/CreateMenuSheet";
 import { useTheme } from "../hooks/useTheme";
+import JobStack from "./JobStack";
 // import EventCreateScreen from "../screens/EventCreateScreen";
 
 const Tab = createBottomTabNavigator();
@@ -87,10 +87,10 @@ export default function TabNavigator() {
 
         <Tab.Screen
           name={APP_ROUTES.JOBS}
-          component={MentorshipScreen}
+          component={JobStack}
           options={({ navigation }) => ({
             tabBarIcon: ({ focused, color, size }) =>
-              renderIcon(focused, color, size, "people"),
+              renderIcon(focused, color, size, "briefcase"),
             headerLeft: () => defaultHeaderLeft(navigation),
           })}
         />

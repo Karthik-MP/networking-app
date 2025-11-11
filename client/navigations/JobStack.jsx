@@ -1,14 +1,14 @@
 // navigation/JobsStack.jsx
 import { createStackNavigator } from "@react-navigation/stack";
-// import JobsListScreen from "../screens/JobsListScreen";
-// import JobDetailScreen from "../screens/JobDetailScreen";
+import JobsListScreen from "@screens/JobsListScreen";
+import JobDetailScreen from "@screens/JobDetailScreen";
 
 const Stack = createStackNavigator();
 
-export default function JobsStack() {
+export default function JobStack() {
   return (
     <Stack.Navigator>
-      {/* <Stack.Screen
+      <Stack.Screen
         name="JobsList"
         component={JobsListScreen}
         options={{ headerShown: false }}
@@ -19,7 +19,7 @@ export default function JobsStack() {
         options={{
           headerShown: false,
         }}
-      /> */}
+      />
     </Stack.Navigator>
   );
 }

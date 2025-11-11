@@ -1,9 +1,8 @@
 // context/AuthContext.js
 
-import { createContext, useState, useEffect } from 'react';
+import { getIdToken, onAuthStateChanged, signOut } from 'firebase/auth';
+import { createContext, useEffect, useState } from 'react';
 import { auth } from '../services/firebase';
-import { onAuthStateChanged, getIdToken, signOut } from 'firebase/auth';
-import { AppState } from 'react-native';
 
 const AuthContext = createContext();
 

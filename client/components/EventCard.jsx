@@ -56,6 +56,7 @@ export default function EventCard({ event }) {
     try {
       await reactToEvent(liveEvent.id, user, type);
     } catch (e) {
+      console.log("Error in EventCard Component", e);
       Alert.alert("Action failed", "Please try again.");
     }
   };

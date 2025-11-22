@@ -98,6 +98,7 @@ export default function LocationPicker({
           <Select
             label="State"
             items={stateItems}
+            placeholder="Select State.."
             value={value}
             disabled={!selectedCountry}
             onSelect={(v) => setValue(`${namePrefix}.state`, v)}
@@ -106,48 +107,53 @@ export default function LocationPicker({
       />
 
       {/* City */}
-      <Controller
-        control={control}
-        name={`${namePrefix}.city`}
-        rules={requiredRule("City")}
-        render={({ field: { value, onChange } }) => (
-          <View className={inputWrapClass}>
-            <TextInput
-              placeholder="City"
-              value={value}
-              onChangeText={onChange}
-              className={inputTextClass}
-              placeholderTextColor={placeholderColor}
-              autoCapitalize="words"
-            />
-          </View>
-        )}
-      />
-
-      {/* Zip / Postal Code */}
-      <Controller
-        control={control}
-        name={`${namePrefix}.zip`}
-        rules={{
-          ...requiredRule("Zip/Postal code"),
-          pattern: {
-            value: /^[A-Za-z0-9-\s]{3,10}$/,
-            message: "Invalid zip/postal code",
-          },
-        }}
-        render={({ field: { value, onChange } }) => (
-          <View className={inputWrapClass}>
-            <TextInput
-              placeholder="Zip / Postal Code"
-              value={value}
-              onChangeText={onChange}
-              className={inputTextClass}
-              placeholderTextColor={placeholderColor}
-              autoCapitalize="characters"
-            />
-          </View>
-        )}
-      />
+      <View className="flex-row">
+        <View className="flex-1 mx-1">
+          <Controller
+            control={control}
+            name={`${namePrefix}.city`}
+            rules={requiredRule("City")}
+            render={({ field: { value, onChange } }) => (
+              <View className={inputWrapClass}>
+                <TextInput
+                  placeholder="City"
+                  value={value}
+                  onChangeText={onChange}
+                  className={inputTextClass}
+                  placeholderTextColor={placeholderColor}
+                  autoCapitalize="words"
+                />
+              </View>
+            )}
+          />
+        </View>
+        <View className="flex-1 mx-1">
+          {/* Zip / Postal Code */}
+          <Controller
+            control={control}
+            name={`${namePrefix}.zip`}
+            rules={{
+              ...requiredRule("Zip/Postal code"),
+              pattern: {
+                value: /^[A-Za-z0-9-\s]{3,10}$/,
+                message: "Invalid zip/postal code",
+              },
+            }}
+            render={({ field: { value, onChange } }) => (
+              <View className={inputWrapClass}>
+                <TextInput
+                  placeholder="Zip / Postal Code"
+                  value={value}
+                  onChangeText={onChange}
+                  className={inputTextClass}
+                  placeholderTextColor={placeholderColor}
+                  autoCapitalize="characters"
+                />
+              </View>
+            )}
+          />
+        </View>
+      </View>
     </View>
   );
 }

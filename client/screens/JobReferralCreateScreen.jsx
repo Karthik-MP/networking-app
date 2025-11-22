@@ -1,35 +1,39 @@
-import React, { useContext, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@hooks/useTheme";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useContext, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
-  View,
-  Text,
-  TextInput,
+  Alert,
+  Modal,
+  Platform,
   Pressable,
   ScrollView,
-  Alert,
-  Platform,
-  Modal,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { useForm, Controller } from "react-hook-form";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import AuthContext from "../contexts/AuthContext";
 import { createJobReferral } from "../services/jobReferralService";
-import AuthContext from "../context/AuthContext";
 
-import MultiEntryList from "../components/profile/MultiEntryList";
-import LocationPicker from "../components/Location/LocationPicker";
 import Dropdown from "../components/Dropdown";
+import LocationPicker from "../components/Location/LocationPicker";
+import MultiEntryList from "../components/profile/MultiEntryList";
 
 import {
-  POSITION_OPTIONS,
-  WORK_MODE_OPTIONS,
   CURRENCY_OPTIONS,
+  POSITION_OPTIONS,
   SALARY_PERIOD_OPTIONS,
-} from "../constant/JobConstant";
+  WORK_MODE_OPTIONS,
+} from "../constants/JobConstant";
+import { ScreenScroll } from "../components/layout/Screen";
 
 export default function JobReferralCreateScreen({ navigation }) {
   const { user } = useContext(AuthContext) || {};
+
+  const { dark, backgroundColor, border, textColor } = useTheme();
 
   const {
     control,
@@ -113,25 +117,28 @@ export default function JobReferralCreateScreen({ navigation }) {
 
     return (
       <View className="mb-4">
-        <Text className="font-semibold mb-2">
+        <Text className={`font-semibold mb-2 ${textColor?.quaternary}`}>
           {label} <Text className="text-red-500">*</Text>
         </Text>
 
         <Pressable
           onPress={() => setShow(true)}
-          className="h-12 rounded-2xl border border-black px-4 flex-row items-center justify-between bg-white"
+          className={`h-12 rounded-2xl border px-4 flex-row items-center justify-between ${border.primary} ${backgroundColor?.primary}`}
         >
-          <Text>
+          <Text className={`${textColor?.tertiary}`}>
             {value ? new Date(value).toDateString() : "Select date..."}
           </Text>
           <Ionicons name="calendar-outline" size={18} color="#6b7280" />
         </Pressable>
 
         {/* ANDROID: popup; iOS: use a simple modal wrapper so it doesn't render inline and flicker */}
-        {show && (
-          Platform.OS === "ios" ? (
+        {show &&
+          (Platform.OS === "ios" ? (
             <Modal transparent animationType="fade" visible={show}>
-              <Pressable className="flex-1 bg-black/40" onPress={() => setShow(false)} />
+              <Pressable
+                className="flex-1 bg-black/40"
+                onPress={() => setShow(false)}
+              />
               <View className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-3">
                 <View className="h-1 w-12 bg-gray-300 self-center rounded-full my-2" />
                 <DateTimePicker
@@ -157,12 +164,13 @@ export default function JobReferralCreateScreen({ navigation }) {
               minimumDate={minDate}
               onChange={onChange}
             />
-          )
-        )}
+          ))}
 
         {/* error */}
         {errors?.[name]?.message ? (
-          <Text className="text-red-600 text-sm mt-1">{errors[name].message}</Text>
+          <Text className="text-red-600 text-sm mt-1">
+            {errors[name].message}
+          </Text>
         ) : null}
       </View>
     );
@@ -222,24 +230,29 @@ export default function JobReferralCreateScreen({ navigation }) {
   const onInvalid = (formErrors) => {
     // will run when form is invalid
     const currentValues = getValues();
-    console.log("INVALID SUBMIT values:", JSON.stringify(currentValues, null, 2));
+    console.log(
+      "INVALID SUBMIT values:",
+      JSON.stringify(currentValues, null, 2)
+    );
     console.log("ERRORS:", JSON.stringify(formErrors, null, 2));
     Alert.alert("Validation", "Please fix the highlighted fields.");
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-1 bg-white">
+    <ScreenScroll className="flex-1">
+      <View className="flex-1">
         <View className="px-4 pt-4 pb-2">
-          <Text className="text-xl font-semibold">Create Job Referral</Text>
-          <Text className="text-sm text-gray-600">
+          <Text className={`text-xl font-semibold ${textColor?.quaternary}`}>
+            Create Job Referral
+          </Text>
+          <Text className={`text-sm ${textColor?.tertiary}`}>
             Share a referral opportunity with the community
           </Text>
         </View>
 
-        <View className="h-[1px] bg-gray-200 my-3" />
+        <View className="h-[1px] my-3" />
 
-        <ScrollView contentContainerStyle={{ padding: 16 }}>
+        <View className="px-4">
           {/* Position (primary) */}
           <Controller
             control={control}
@@ -247,7 +260,7 @@ export default function JobReferralCreateScreen({ navigation }) {
             rules={{ required: "Position is required" }}
             render={({ field: { value, onChange } }) => (
               <View className="mb-2">
-                <Text className="font-semibold mb-2">
+                <Text className={`font-semibold mb-2 ${textColor?.quaternary}`}>
                   Position <Text className="text-red-500">*</Text>
                 </Text>
                 <Dropdown
@@ -270,9 +283,11 @@ export default function JobReferralCreateScreen({ navigation }) {
               control={control}
               name="positionOther"
               rules={{ required: "Please specify the position" }}
-              render={({ field: { value, onChange} }) => (
+              render={({ field: { value, onChange } }) => (
                 <View className="mb-4">
-                  <Text className="font-semibold mb-2">
+                  <Text
+                    className={`font-semibold mb-2 ${textColor?.quaternary}`}
+                  >
                     Specify Position <Text className="text-red-500">*</Text>
                   </Text>
                   <TextInput
@@ -292,7 +307,11 @@ export default function JobReferralCreateScreen({ navigation }) {
           )}
 
           {/* Company */}
-          <Text className="text-lg font-semibold mb-2">Company</Text>
+          <Text
+            className={`text-lg font-semibold mb-2 ${textColor?.quaternary}`}
+          >
+            Company
+          </Text>
 
           <Controller
             control={control}
@@ -300,14 +319,15 @@ export default function JobReferralCreateScreen({ navigation }) {
             rules={{ required: "Company name is required" }}
             render={({ field: { value, onChange } }) => (
               <View className="mb-4">
-                <Text className="font-semibold mb-2">
+                <Text className={`font-semibold mb-2 ${textColor?.quaternary}`}>
                   Company Name <Text className="text-red-500">*</Text>
                 </Text>
                 <TextInput
                   value={value}
                   onChangeText={onChange}
                   placeholder="e.g., Google"
-                  className="h-12 rounded-2xl border border-black px-4 bg-white"
+                  placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
+                  className={`h-12 rounded-2xl border px-4 ${border.primary} ${backgroundColor?.primary}`}
                 />
                 {errors?.company?.name?.message ? (
                   <Text className="text-red-600 text-sm mt-1">
@@ -324,14 +344,15 @@ export default function JobReferralCreateScreen({ navigation }) {
             rules={{ required: "Industry is required" }}
             render={({ field: { value, onChange } }) => (
               <View className="mb-4">
-                <Text className="font-semibold mb-2">
+                <Text className={`font-semibold mb-2 ${textColor?.quaternary}`}>
                   Industry <Text className="text-red-500">*</Text>
                 </Text>
                 <TextInput
                   value={value}
                   onChangeText={onChange}
                   placeholder="e.g., FinTech, AI, E-commerce"
-                  className="h-12 rounded-2xl border border-black px-4 bg-white"
+                  placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
+                  className={`h-12 rounded-2xl border px-4 ${border.primary} ${backgroundColor?.primary}`}
                 />
                 {errors?.company?.industry?.message ? (
                   <Text className="text-red-600 text-sm mt-1">
@@ -372,7 +393,7 @@ export default function JobReferralCreateScreen({ navigation }) {
                 renderItem={(loc, index) => (
                   <View
                     key={`${loc}-${index}`}
-                    className="flex-row items-center justify-between bg-white border border-black rounded-xl px-3 py-2 mb-2"
+                    className={`flex-row items-center justify-between ${border.primary} ${backgroundColor?.primary} border rounded-xl px-3 py-2 mb-2`}
                   >
                     <Text className="text-black">{loc}</Text>
                     <Pressable onPress={() => removeLocationAt(index)}>
@@ -398,7 +419,7 @@ export default function JobReferralCreateScreen({ navigation }) {
             rules={{ required: "Work mode is required" }}
             render={({ field: { value, onChange } }) => (
               <View className="mb-2">
-                <Text className="font-semibold mb-2">
+                <Text className={`font-semibold mb-2 ${textColor?.quaternary}`}>
                   Work Mode <Text className="text-red-500">*</Text>
                 </Text>
                 <Dropdown
@@ -424,7 +445,7 @@ export default function JobReferralCreateScreen({ navigation }) {
             rules={{ required: "Salary amount is required" }}
             render={({ field: { value, onChange } }) => (
               <View className="mb-3">
-                <Text className="font-semibold mb-2">
+                <Text className={`font-semibold mb-2 ${textColor?.quaternary}`}>
                   Amount <Text className="text-red-500">*</Text>
                 </Text>
                 <TextInput
@@ -432,7 +453,8 @@ export default function JobReferralCreateScreen({ navigation }) {
                   value={String(value ?? "")}
                   onChangeText={onChange}
                   placeholder="e.g., 150000"
-                  className="h-12 rounded-2xl border border-black px-4 bg-white"
+                  placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
+                  className={`h-12 rounded-2xl border px-4 ${border.primary} ${backgroundColor?.primary}`}
                 />
                 {errors?.salary?.amount?.message ? (
                   <Text className="text-red-600 text-sm mt-1">
@@ -448,7 +470,7 @@ export default function JobReferralCreateScreen({ navigation }) {
             rules={{ required: "Currency is required" }}
             render={({ field: { value, onChange } }) => (
               <View className="mb-3">
-                <Text className="font-semibold mb-2">
+                <Text className={`font-semibold mb-2 ${textColor?.quaternary}`}>
                   Currency <Text className="text-red-500">*</Text>
                 </Text>
                 <Dropdown
@@ -471,12 +493,15 @@ export default function JobReferralCreateScreen({ navigation }) {
             rules={{ required: "Salary period is required" }}
             render={({ field: { value, onChange } }) => (
               <View className="mb-3">
-                <Text className="font-semibold mb-2">
+                <Text className={`font-semibold mb-2 ${textColor?.quaternary}`}>
                   Period <Text className="text-red-500">*</Text>
                 </Text>
                 <Dropdown
                   label="Select period"
-                  items={SALARY_PERIOD_OPTIONS.map((p) => ({ id: p, label: p }))}
+                  items={SALARY_PERIOD_OPTIONS.map((p) => ({
+                    id: p,
+                    label: p,
+                  }))}
                   value={value}
                   onSelect={onChange}
                 />
@@ -496,7 +521,9 @@ export default function JobReferralCreateScreen({ navigation }) {
             rules={{ required: "Job description is required" }}
             render={({ field: { value, onChange } }) => (
               <View className="mb-4">
-                <Text className="text-lg font-semibold mb-2">
+                <Text
+                  className={`text-lg font-semibold mb-2 ${textColor?.quaternary}`}
+                >
                   Job Description <Text className="text-red-500">*</Text>
                 </Text>
                 <TextInput
@@ -506,7 +533,8 @@ export default function JobReferralCreateScreen({ navigation }) {
                   multiline
                   numberOfLines={5}
                   textAlignVertical="top"
-                  className="min-h-[120px] rounded-2xl border border-black px-4 py-3 bg-white"
+                  placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
+                  className={`h-12 rounded-2xl border px-4 ${border.primary} ${backgroundColor?.primary}`}
                 />
                 {errors.jobDescription?.message ? (
                   <Text className="text-red-600 text-sm mt-1">
@@ -524,15 +552,17 @@ export default function JobReferralCreateScreen({ navigation }) {
             rules={{ required: "Referral applicants limit is required" }}
             render={({ field: { value, onChange } }) => (
               <View className="mb-4">
-                <Text className="font-semibold mb-2">
-                  Referral Applicants Limit <Text className="text-red-500">*</Text>
+                <Text className={`font-semibold mb-2 ${textColor?.quaternary}`}>
+                  Referral Applicants Limit{" "}
+                  <Text className="text-red-500">*</Text>
                 </Text>
                 <TextInput
                   keyboardType="numeric"
                   value={String(value ?? "")}
                   onChangeText={onChange}
                   placeholder="e.g., 10"
-                  className="h-12 rounded-2xl border border-black px-4 bg-white"
+                  placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
+                  className={`h-12 rounded-2xl border px-4 ${border.primary} ${backgroundColor?.primary}`}
                 />
                 {errors.referralApplicantsLimit?.message ? (
                   <Text className="text-red-600 text-sm mt-1">
@@ -550,7 +580,7 @@ export default function JobReferralCreateScreen({ navigation }) {
             rules={{ required: "Job link is required" }}
             render={({ field: { value, onChange } }) => (
               <View className="mb-4">
-                <Text className="font-semibold mb-2">
+                <Text className={`font-semibold mb-2 ${textColor?.quaternary}`}>
                   Job Link <Text className="text-red-500">*</Text>
                 </Text>
                 <TextInput
@@ -559,7 +589,8 @@ export default function JobReferralCreateScreen({ navigation }) {
                   autoCapitalize="none"
                   keyboardType="url"
                   placeholder="https://careers.company.com/job/12345"
-                  className="h-12 rounded-2xl border border-black px-4 bg-white"
+                  placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
+                  className={`h-12 rounded-2xl border px-4 ${border.primary} ${backgroundColor?.primary}`}
                 />
                 {errors.jobLink?.message ? (
                   <Text className="text-red-600 text-sm mt-1">
@@ -571,23 +602,36 @@ export default function JobReferralCreateScreen({ navigation }) {
           />
 
           {/* Deadlines */}
-          <Text className="text-lg font-semibold mt-2 mb-2">Deadlines</Text>
-          <DateField name="referralDeadline" label="Referral Deadline" minDate={new Date()} />
-          <DateField
-            name="jobDeadline"
-            label="Job Deadline"
-            minDate={referralDeadline || new Date()}
-          />
-
+          <Text
+            className={`text-lg font-semibold mt-2 mb-2 ${textColor?.quaternary}`}
+          >
+            Deadlines
+          </Text>
+          <View className="flex-row">
+            <View className="flex-1 mx-1">
+              <DateField
+                name="referralDeadline"
+                label="Referral Deadline"
+                minDate={new Date()}
+              />
+            </View>
+            <View className="flex-1 mx-1">
+              <DateField
+                name="jobDeadline"
+                label="Job Deadline"
+                minDate={referralDeadline || new Date()}
+              />
+            </View>
+          </View>
           <View className="h-6" />
-        </ScrollView>
+        </View>
 
         {/* Save */}
         <View className="px-4 py-3">
           <Pressable
             disabled={isSubmitting}
             onPress={handleSubmit(onSubmit, onInvalid)}
-            className="h-12 rounded-2xl bg-black items-center justify-center"
+            className={`h-12 rounded-2xl bg-black items-center justify-center ${backgroundColor?.buttonPrimary}`}
           >
             <Text className="text-white font-medium">
               {isSubmitting ? "Saving..." : "Save Referral"}
@@ -595,6 +639,6 @@ export default function JobReferralCreateScreen({ navigation }) {
           </Pressable>
         </View>
       </View>
-    </SafeAreaView>
+    </ScreenScroll>
   );
 }

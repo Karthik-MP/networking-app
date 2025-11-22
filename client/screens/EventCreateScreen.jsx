@@ -1,5 +1,5 @@
-import { ThemeContext } from "@contexts/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@hooks/useTheme";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { useContext, useState } from "react";
@@ -14,12 +14,11 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { ScreenScroll } from "../components/layout/Screen";
 import LocationPicker from "../components/Location/LocationPicker";
 import Select from "../components/Select";
 import AuthContext from "../contexts/AuthContext";
 import { createEventWithUploads } from "../services/eventService";
-import { ScreenScroll } from "../components/layout/Screen";
-
 const EVENT_TYPES = [
   { id: "meetup", label: "Meetup" },
   { id: "function", label: "Function" },
@@ -41,13 +40,11 @@ const TIMEZONES = [
 
 export default function EventCreateScreen({ navigation }) {
   const { user } = useContext(AuthContext) || {};
-  const { theme } = useContext(ThemeContext);
-  const isDark = theme?.dark;
+  const { dark, backgroundColor, border, textColor } = useTheme();
 
-  // text colors only – no bg changes
-  const headingText = isDark ? "text-white" : "text-black";
-  const bodyText = isDark ? "text-gray-200" : "text-gray-700";
-  const subtleText = isDark ? "text-gray-400" : "text-gray-600";
+  const headingText = dark ? "text-white" : "text-black";
+  const bodyText = dark ? "text-gray-200" : "text-gray-700";
+  const subtleText = dark ? "text-gray-400" : "text-gray-600";
 
   const {
     control,
@@ -101,7 +98,7 @@ export default function EventCreateScreen({ navigation }) {
         </Text>
         <Pressable
           onPress={() => setShow(true)}
-          className="h-12 rounded-2xl border border-black px-4 flex-row items-center justify-between"
+          className={`h-12 rounded-2xl border ${border?.primary} px-4 flex-row items-center justify-between`}
         >
           <Text className={bodyText}>
             {value ? new Date(value).toDateString() : "Select date..."}
@@ -156,14 +153,14 @@ export default function EventCreateScreen({ navigation }) {
     };
     return (
       <View className="mb-4">
-        <Text className="font-semibold mb-2">
+        <Text className={`font-semibold mb-2 ${headingText}`}>
           {label} <Text className="text-red-500">*</Text>
         </Text>
         <Pressable
           onPress={() => setShow(true)}
-          className="h-12 rounded-2xl border border-black px-4 flex-row items-center justify-between"
+          className={`h-12 rounded-2xl border ${border.primary} px-4 flex-row items-center justify-between`}
         >
-          <Text>
+          <Text className={bodyText}>
             {value
               ? new Date(value).toLocaleTimeString([], {
                   hour: "2-digit",
@@ -355,7 +352,7 @@ export default function EventCreateScreen({ navigation }) {
         rules={{ required: "Event type is required" }}
         render={({ field: { value, onChange } }) => (
           <View className="mb-3">
-            <Text className="font-semibold mb-2">
+            <Text className={`font-semibold mb-2 ${headingText}`}>
               Type <Text className="text-red-500">*</Text>
             </Text>
             <Select
@@ -387,7 +384,8 @@ export default function EventCreateScreen({ navigation }) {
               value={value}
               onChangeText={onChange}
               placeholder="e.g., Bengaluru Tech Meetup"
-              className={`"h-12 rounded-2xl border border-black px-4 ${theme?.background?.primary}"`}
+              placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
+              className={`h-12 rounded-2xl border px-4 ${border.primary} ${backgroundColor?.primary}`}
             />
 
             {errors.name?.message && (
@@ -406,7 +404,7 @@ export default function EventCreateScreen({ navigation }) {
         rules={{ required: "Venue mode is required" }}
         render={({ field: { value, onChange } }) => (
           <View className="mb-3">
-            <Text className="font-semibold mb-2">
+            <Text className={`font-semibold mb-2 ${headingText}`}>
               Venue <Text className="text-red-500">*</Text>
             </Text>
             <Select
@@ -460,7 +458,8 @@ export default function EventCreateScreen({ navigation }) {
                 autoCapitalize="none"
                 keyboardType="url"
                 placeholder="https://meet.google.com/..."
-                className="h-12 rounded-2xl border border-black px-4 bg-white"
+                placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
+                className={`"h-12 rounded-2xl border px-4 ${backgroundColor.primary} ${border.primary}`}
               />
               {errors?.venue?.meetingLink?.message && (
                 <Text className="text-red-600 text-sm mt-1">
@@ -479,7 +478,7 @@ export default function EventCreateScreen({ navigation }) {
         rules={{ required: "Timezone is required" }}
         render={({ field: { value, onChange } }) => (
           <View className="mb-3">
-            <Text className="font-semibold mb-2">
+            <Text className={`font-semibold mb-2 ${headingText}`}>
               Timezone <Text className="text-red-500">*</Text>
             </Text>
             <Select
@@ -503,10 +502,12 @@ export default function EventCreateScreen({ navigation }) {
 
       {/* Posters */}
       <View className="mb-4">
-        <Text className="text-lg font-semibold mb-2">Event Posters</Text>
+        <Text className={`text-lg font-semibold mb-2 ${headingText}`}>
+          Event Posters
+        </Text>
         <Pressable
           onPress={pickPoster}
-          className="h-11 rounded-xl bg-black items-center justify-center mb-3"
+          className={`h-11 rounded-xl ${backgroundColor.buttonPrimary} ${border.primary} items-center justify-center mb-3`}
         >
           <Text className="text-white font-medium">
             Add Poster (JPEG ≤ 3MB)
@@ -538,17 +539,18 @@ export default function EventCreateScreen({ navigation }) {
         rules={{ required: "Description is required" }}
         render={({ field: { value, onChange } }) => (
           <View className="mb-4">
-            <Text className="font-semibold mb-2">
+            <Text className={`font-semibold mb-2 ${headingText}`}>
               Description <Text className="text-red-500">*</Text>
             </Text>
             <TextInput
               value={value}
               onChangeText={onChange}
               placeholder="What is this event about?"
+              placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
               multiline
               numberOfLines={5}
               textAlignVertical="top"
-              className="min-h-[120px] rounded-2xl border border-black px-4 py-3 bg-white"
+              className={`"min-h-[120px] rounded-2xl border px-4 py-3 ${backgroundColor.primary} ${border.primary}`}
             />
             {errors.description?.message && (
               <Text className="text-red-600 text-sm mt-1">
@@ -566,14 +568,15 @@ export default function EventCreateScreen({ navigation }) {
         rules={{ required: "Host name is required" }}
         render={({ field: { value, onChange } }) => (
           <View className="mb-3">
-            <Text className="font-semibold mb-2">
+            <Text className={`font-semibold mb-2 ${headingText}`}>
               Host Name <Text className="text-red-500">*</Text>
             </Text>
             <TextInput
               value={value}
               onChangeText={onChange}
               placeholder="e.g., Karnataka Indian Student Org"
-              className="h-12 rounded-2xl border border-black px-4 bg-white"
+              placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
+              className={`"h-12 rounded-2xl border px-4 ${backgroundColor.primary} ${border.primary}`}
             />
             {errors.hostName?.message && (
               <Text className="text-red-600 text-sm mt-1">
@@ -597,7 +600,8 @@ export default function EventCreateScreen({ navigation }) {
               value={value}
               onChangeText={onChange}
               placeholder="e.g., Special Speaker"
-              className="h-12 rounded-2xl border border-black px-4 bg-white"
+              placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
+              className={`h-12 rounded-2xl border ${backgroundColor.primary} ${border.primary}`}
             />
           </View>
         )}
@@ -610,7 +614,7 @@ export default function EventCreateScreen({ navigation }) {
         rules={{ required: "Capacity is required" }}
         render={({ field: { value, onChange } }) => (
           <View className="mb-3">
-            <Text className="font-semibold mb-2">
+            <Text className={`font-semibold mb-2 ${headingText}`}>
               Limit number of spots <Text className="text-red-500">*</Text>
             </Text>
             <TextInput
@@ -618,7 +622,8 @@ export default function EventCreateScreen({ navigation }) {
               value={String(value ?? "")}
               onChangeText={onChange}
               placeholder="e.g., 100"
-              className="h-12 rounded-2xl border border-black px-4 bg-white"
+              placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
+              className={`"h-12 rounded-2xl border px-4 ${backgroundColor.primary} ${border.primary}`}
             />
             {errors.capacity?.message && (
               <Text className="text-red-600 text-sm mt-1">
@@ -635,7 +640,9 @@ export default function EventCreateScreen({ navigation }) {
         name="commentsEnabled"
         render={({ field: { value, onChange } }) => (
           <View className="mb-6 flex-row items-center justify-between">
-            <Text className="font-semibold">Enable comments</Text>
+            <Text className={`font-semibold ${headingText}`}>
+              Enable comments
+            </Text>
             <Pressable
               onPress={() => onChange(!value)}
               className={`w-12 h-7 rounded-full ${value ? "bg-green-600" : "bg-gray-300"} items-${value ? "end" : "start"} justify-center px-1`}
@@ -657,7 +664,7 @@ export default function EventCreateScreen({ navigation }) {
           console.log("EVENT ERRORS:", JSON.stringify(e, null, 2));
           Alert.alert("Validation", "Please fix the highlighted fields.");
         })}
-        className="h-12 rounded-2xl bg-black items-center justify-center mb-8"
+        className={`h-12 rounded-2xl ${backgroundColor.buttonPrimary} ${border.primary} items-center justify-center mb-8`}
       >
         <Text className="text-white font-medium">
           {isSubmitting ? "Saving..." : "Create Event"}

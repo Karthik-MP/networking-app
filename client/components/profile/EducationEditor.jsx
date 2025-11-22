@@ -1,5 +1,5 @@
-import { ThemeContext } from "@contexts/ThemeContext";
-import { useContext, useEffect } from "react";
+import { useTheme } from "@hooks/useTheme";
+import { useEffect } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import {
   ScrollView,
@@ -12,7 +12,6 @@ import { useUserProfile } from "../../hooks/useUserProfile";
 import LocationPicker from "../Location/LocationPicker";
 import Select from "../Select";
 import YearRangePicker from "./YearRangePicker";
-import { useTheme } from "@hooks/useTheme";
 
 export default function EducationEditor({ visible, onSave }) {
   const { profile } = useUserProfile();

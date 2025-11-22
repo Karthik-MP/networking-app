@@ -7,12 +7,16 @@ import {
 import { UserProfileProvider } from "@hooks/useUserProfile";
 import AuthStack from "@navigations/AuthStack";
 import TabNavigator from "@navigations/TabNavigator";
+import CreateStack from "@navigations/CreateStack";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { useContext } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "./components/toast";
 import "./global.css";
+
+const RootStack = createStackNavigator();
 
 export default function App() {
   return (
@@ -35,8 +39,14 @@ function MainApp() {
   return (
     <>
       <NavigationContainer theme={theme}>
-        {/* <TabNavigator /> */}
-        {user ? <TabNavigator /> : <AuthStack />}
+        {true ? (
+          <RootStack.Navigator screenOptions={{ headerShown: false }}>
+            <RootStack.Screen name="Main" component={TabNavigator} />
+            <RootStack.Screen name="CreateStack" component={CreateStack} />
+          </RootStack.Navigator>
+        ) : (
+          <AuthStack />
+        )}
       </NavigationContainer>
       <Toast 
         config={toastConfig} 

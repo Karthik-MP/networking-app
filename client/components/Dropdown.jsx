@@ -19,8 +19,6 @@ export default function Dropdown({
   onSelect,
   placeholder = "Select...",
   disabled = false,
-  containerClassName,
-  labelClassName,
   fieldClassName,
   fieldTextClassName,
   placeholderTextColor,
@@ -47,9 +45,9 @@ export default function Dropdown({
   const labelBase = `text-sm font-semibold mb-2 ${textColor.secondary}`;
 
   return (
-    <View className={containerClassName}>
+    <View className={`${backgroundColor?.primary}`}>
       {label ? (
-        <Text className={labelClassName ?? labelBase}>{label}</Text>
+        <Text className={`${textColor?.quaternary}`}>{label}</Text>
       ) : null}
 
       <TouchableOpacity
@@ -79,86 +77,73 @@ export default function Dropdown({
         visible={open}
         animationType="slide"
         onRequestClose={() => setOpen(false)}
+        className="bg-slate-950"
       >
-        <SafeAreaView
+        {/* Header */}
+        <View
+          className={`${backgroundColor?.primary}`}
           style={[
-            styles.flex1,
-            { backgroundColor: dark ? "#0F172A" : "#FFFFFF" },
+            styles.header,
+            { borderBottomColor: dark ? "#334155" : "#E5E7EB" },
           ]}
         >
-          {/* Header */}
-          <View
+          <Text
+            className={textColor?.quaternary}
             style={[
-              styles.header,
-              { borderBottomColor: dark ? "#334155" : "#E5E7EB" },
+              styles.headerTitle,
+              { color: dark ? "#E2E8F0" : "#111827" },
             ]}
           >
+            {label || "Select"}
+          </Text>
+          <TouchableOpacity onPress={() => setOpen(false)}>
             <Text
-              style={[
-                styles.headerTitle,
-                { color: dark ? "#E2E8F0" : "#111827" },
-              ]}
+              style={[styles.link, { color: dark ? "#60A5FA" : "#2563EB" }]}
             >
-              {label || "Select"}
+              Close
             </Text>
-            <TouchableOpacity onPress={() => setOpen(false)}>
-              <Text
-                style={[styles.link, { color: dark ? "#60A5FA" : "#2563EB" }]}
-              >
-                Close
-              </Text>
-            </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
+        </View>
 
-          {/* Search */}
-          <View style={styles.searchWrap}>
-            <TextInput
-              placeholder="Search..."
-              value={q}
-              onChangeText={setQ}
-              placeholderTextColor={phColor}
-              style={[
-                styles.searchInput,
-                {
-                  backgroundColor: dark ? "#0B1220" : "#FFFFFF",
-                  color: dark ? "#F1F5F9" : "#111827",
-                  borderColor: dark ? "#334155" : "#E5E7EB",
-                },
-              ]}
-            />
-          </View>
-
-          {/* List */}
-          <FlatList
-            data={filtered}
-            keyExtractor={(item) => String(item.id)}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  onSelect?.(item.id);
-                  setOpen(false);
-                  setQ("");
-                }}
-                style={[
-                  styles.row,
-                  { backgroundColor: dark ? "#0F172A" : "#FFFFFF" },
-                ]}
-              >
-                <Text style={{ color: dark ? "#E5E7EB" : "#111827" }}>
-                  {item.label}
-                </Text>
-              </TouchableOpacity>
-            )}
-            ItemSeparatorComponent={() => (
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: dark ? "#334155" : "#F1F5F9",
-                }}
-              />
-            )}
+        {/* Search */}
+        <View className={`${backgroundColor.primary}`} style={styles.searchWrap}>
+          <TextInput
+            placeholder="Search..."
+            value={q}
+            onChangeText={setQ}
+            style={[
+              styles.searchInput,
+            ]}
+            placeholderTextColor={dark ? "#6B7280" : "#9CA3AF"}
+            className={`"h-12 rounded-2xl border px-4 ${textColor?.quaternary} ${backgroundColor.primary} ${border.primary}`}
           />
-        </SafeAreaView>
+        </View>
+
+        {/* List */}
+        <FlatList
+          data={filtered}
+          keyExtractor={(item) => String(item.id)}
+          className={`${backgroundColor?.primary}`}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => {
+                onSelect?.(item.id);
+                setOpen(false);
+                setQ("");
+              }}
+              style={[styles.row]}
+            >
+              <Text className={`${textColor?.quaternary}`}>{item.label}</Text>
+            </TouchableOpacity>
+          )}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                height: 1,
+              }}
+            />
+          )}
+        />
       </Modal>
     </View>
   );

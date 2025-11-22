@@ -17,7 +17,7 @@ const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
   const navigation = useNavigation();
-  const { theme, dark } = useTheme(); 
+  const { theme } = useTheme(); 
 
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -25,12 +25,12 @@ export default function TabNavigator() {
   const closeCreate = useCallback(() => setCreateOpen(false), []);
 
   const handleCreateJobReferral = useCallback(() => {
-    navigation.navigate("CreateJobRef", { screen: "JobReferralCreate" });
+    navigation.navigate("CreateStack", { screen: "JobReferralCreate" });
     closeCreate();
   }, [navigation, closeCreate]);
 
   const handleCreateEvent = useCallback(() => {
-    navigation.navigate("CreateEvent", { screen: "EventCreate" });
+    navigation.navigate("CreateStack", { screen: "EventCreate" });
     closeCreate();
   }, [navigation, closeCreate]);
 

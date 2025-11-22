@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import Entypo from "@expo/vector-icons/Entypo";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { Suspense, useCallback, useState } from "react";
@@ -17,7 +18,7 @@ const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
   const navigation = useNavigation();
-  const { theme } = useTheme(); 
+  const { theme } = useTheme();
 
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -46,14 +47,29 @@ export default function TabNavigator() {
       />
     ) : null;
 
-  // tab icons
-  const renderIcon = (focused, color, size, name) => (
-    <Ionicons
-      name={focused ? name : `${name}-outline`}
-      size={size}
-      color={color}
-    />
-  );
+  const renderIcon = (icon, focused, color, size, name) => {
+    if (icon === "ionicons") {
+      return (
+        <Ionicons
+          name={focused ? name : `${name}-outline`}
+          size={size}
+          color={color}
+        />
+      );
+    }
+
+    if (icon === "entypo") {
+      return (
+        <Entypo
+          name={name} // Entypo does NOT support -outline variants
+          size={size}
+          color={color}
+        />
+      );
+    }
+
+    return null;
+  };
 
   const activeTint = theme.colors.primary; // violet-600
   const inactiveTint = theme.colors.text + "80"; // same text color, 50% alpha
@@ -80,9 +96,19 @@ export default function TabNavigator() {
           component={DashboardScreen}
           options={({ navigation }) => ({
             tabBarIcon: ({ focused, color, size }) =>
-              renderIcon(focused, color, size, "home"),
+              renderIcon("ionicons", focused, color, size, "home"),
             headerLeft: () => defaultHeaderLeft(navigation),
           })}
+        />
+
+        <Tab.Screen
+          name={APP_ROUTES.MY_NETWORK}
+          component={ProfileScreen}
+          options={{
+            headerShown: false,
+            tabBarIcon: ({ focused, color, size }) =>
+              renderIcon("entypo", focused, color, size, "network"),
+          }}
         />
 
         <Tab.Screen
@@ -90,7 +116,7 @@ export default function TabNavigator() {
           component={JobStack}
           options={({ navigation }) => ({
             tabBarIcon: ({ focused, color, size }) =>
-              renderIcon(focused, color, size, "briefcase"),
+              renderIcon("ionicons", focused, color, size, "briefcase"),
             headerLeft: () => defaultHeaderLeft(navigation),
           })}
         />
@@ -101,7 +127,7 @@ export default function TabNavigator() {
           options={{
             headerShown: false,
             tabBarIcon: ({ focused, color, size }) =>
-              renderIcon(focused, color, size, "person"),
+              renderIcon("ionicons", focused, color, size, "person"),
           }}
         />
       </Tab.Navigator>

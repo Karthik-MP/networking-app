@@ -7,7 +7,7 @@ import { useUserProfile } from "@hooks/useUserProfile";
 
 export default function Header({ onCreatePress }) {
   const navigation = useNavigation();
-  const { theme, dark, backgroundColor, textColor, border } = useTheme(); // ✅ useTheme instead of useContext
+  const { theme, dark, backgroundColor } = useTheme(); // ✅ useTheme instead of useContext
   const { profile } = useUserProfile();
 
   const navigateToProfile = () => {

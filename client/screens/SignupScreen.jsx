@@ -1,15 +1,15 @@
 // screens/SignupScreen.jsx
 import { useTheme } from "@hooks/useTheme";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { Controller, useForm } from "react-hook-form";
 import {
-    StyleSheet,
-    Switch,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Dropdown from "../components/Dropdown";
 import { ScreenScroll } from "../components/layout/Screen";
@@ -51,7 +51,7 @@ export default function SignupScreen({ navigation }) {
   const isImmigrant = watch("is_immigrant");
 
   const onSubmit = async (data) => {
-    console.log("onSubmit...");
+    // console.log("onSubmit...");
     try {
       const {
         email_address,
@@ -75,7 +75,7 @@ export default function SignupScreen({ navigation }) {
 
       // Check if user document already exists in Firestore (extra safety)
       const userDocRef = doc(db, "users", user.uid);
-      
+
       const payload = {
         uid: user.uid,
         email_address,
@@ -95,11 +95,14 @@ export default function SignupScreen({ navigation }) {
       showToast("success", "Signed up successfully!");
       navigation.reset({ index: 0, routes: [{ name: "Welcome" }] });
     } catch (e) {
-    //   console.error(e);
+      //   console.error(e);
 
       // Handle specific Firebase Auth errors
       if (e.code === "auth/email-already-in-use") {
-        showToast("error", "This email is already registered. Please login instead.");
+        showToast(
+          "error",
+          "This email is already registered. Please login instead."
+        );
       } else if (e.code === "auth/invalid-email") {
         showToast("error", "Invalid email address.");
       } else if (e.code === "auth/weak-password") {

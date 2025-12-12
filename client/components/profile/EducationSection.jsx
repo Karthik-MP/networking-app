@@ -8,8 +8,9 @@ import { showToast } from "../toast";
 import EducationEditor from "./EducationEditor";
 import SectionCard from "./SectionCard";
 
-export default function EducationSection() {
-  const { profile, saveProfile } = useUserProfile();
+export default function EducationSection({ profileData, isCurrentUser }) {
+  const { profile: currentUserProfile, saveProfile } = useUserProfile();
+  const [profile] = useState(profileData || currentUserProfile);
   const rows = profile?.education || [];
   const [open, setOpen] = useState(false);
   const { textColor } = useTheme(); // ✅ theme-based text colors
@@ -67,7 +68,10 @@ export default function EducationSection() {
 
   return (
     <>
-      <SectionCard title="Education" onEdit={() => setOpen(true)}>
+      <SectionCard
+        title="Education"
+        onEdit={isCurrentUser ? () => setOpen(true) : false}
+      >
         {rows.length === 0 ? (
           <Text className={`text-sm ${textColor.secondary}`}>
             Add your education

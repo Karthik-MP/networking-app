@@ -1,6 +1,6 @@
 // client/services/storage.js
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import * as ImageManipulator from "expo-image-manipulator";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "./firebase";
 
 /**
@@ -9,14 +9,14 @@ import { storage } from "./firebase";
  * @param {string} localUri - e.g., from ImagePicker
  */
 export async function uploadAvatar(uid, localUri) {
-  console.log("Uploading avatar for", uid, localUri);
+  // console.log("Uploading avatar for", uid, localUri);
   // 1) compress (target ~720px long edge, JPEG 0.7)
   const manipulated = await ImageManipulator.manipulateAsync(
     localUri,
     [{ resize: { width: 720 } }],
     { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
   );
-  console.log("Manupulated image", manipulated);
+  // console.log("Manupulated image", manipulated);
   // 2) fetch -> blob
   const res = await fetch(manipulated.uri);
   const blob = await res.blob();
@@ -30,7 +30,7 @@ export async function uploadAvatar(uid, localUri) {
     uploadTask.on(
       "state_changed",
       // (snap) => console.log("upload progress", snap.bytesTransferred),
-      () => {},
+      () => { },
       reject,
       resolve
     );

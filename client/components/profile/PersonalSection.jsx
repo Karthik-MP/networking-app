@@ -6,8 +6,9 @@ import { EditorModalLayout } from "../EditorModalLayout";
 import PersonalEditor from "./PersonalEditor";
 import SectionCard from "./SectionCard";
 
-export default function PersonalSection() {
-  const { profile, saveProfile } = useUserProfile();
+export default function PersonalSection({ profileData, isCurrentUser = true }) {
+  const { profile: currentUserProfile, saveProfile } = useUserProfile();
+  const [profile] = useState(profileData || currentUserProfile);
   const [open, setOpen] = useState(false);
   const { textColor } = useTheme();
   const onSave = async (vals) => {
@@ -23,7 +24,10 @@ export default function PersonalSection() {
 
   return (
     <>
-      <SectionCard title="Personal" onEdit={() => setOpen(true)}>
+      <SectionCard
+        title="Personal"
+        onEdit={isCurrentUser ? () => setOpen(true) : false}
+      >
         <View className="h-2" />
 
         {/* Phone */}
@@ -62,7 +66,11 @@ export default function PersonalSection() {
         onSave={onSave}
         onClose={() => setOpen(false)}
       >
-        <PersonalEditor visible={open} onClose={() => setOpen(false)} onSave={onSave}/>
+        <PersonalEditor
+          visible={open}
+          onClose={() => setOpen(false)}
+          onSave={onSave}
+        />
       </EditorModalLayout>
     </>
   );

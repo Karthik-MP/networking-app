@@ -47,9 +47,8 @@ export const ThemeProvider = ({ children, followSystemByDefault = true }) => {
     await AsyncStorage.setItem(STORAGE_KEY, value);
   }, []);
 
-
   const effective = scheme === "system" ? system : scheme;
-  console.log(scheme, effective)
+  // console.log(scheme, effective)
   const theme = effective === "dark" ? DarkTheme : LightTheme;
 
   const toggle = useCallback(() => {

@@ -1,10 +1,10 @@
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { showToast } from "../components/toast";
 import AuthContext from "../contexts/AuthContext";
 import { db } from "../services/firebase";
 import { computeProfileCompletion } from "../services/profileCompletion";
 import { uploadAvatar as storageUploadAvatar } from "../services/storage";
-import { showToast } from "../components/toast";
 
 const UserProfileContext = createContext();
 
@@ -12,6 +12,7 @@ export const UserProfileProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [currentUserConnections, setCurrentUserConnections] = useState(null);
   const [saving, setSaving] = useState(false);
 
   // console.log("user from AuthContext", user)
@@ -20,12 +21,19 @@ export const UserProfileProvider = ({ children }) => {
     let mounted = true;
     (async () => {
       if (!user) return;
+      setLoading(true);
       try {
-        const ref = doc(db, "users", user.uid);
-        const snap = await getDoc(ref);
+        // Fetch both user profile and connections in parallel
+        const [userSnap, connectionSnap] = await Promise.all([
+          getDoc(doc(db, "users", user.uid)),
+          getDoc(doc(db, "connections", user.uid))
+        ]);
+
         if (!mounted) return;
-        const data = snap.exists() ? snap.data() : {};
-        const base = data || {
+
+        // Process user profile
+        const userData = userSnap.exists() ? userSnap.data() : {};
+        const profile = {
           full_name: { first_name: "", last_name: "" },
           email_address: user.email || "",
           phone_number: { country_code: "+1", number: "" },
@@ -34,21 +42,30 @@ export const UserProfileProvider = ({ children }) => {
           education: [],
           experience: [],
           interests: { industries: [], it_sub: [], hobbies: [] },
-          photoURL: data.photoURL || "",
-          ...data
+          photoURL: "",
+          ...userData
         };
-        // console.log(base)
-        setProfile(base);
+
+        // Process connections
+        const connections = connectionSnap.exists() ? connectionSnap.data() : {
+          uid: user.uid,
+          follower_id: [],
+          requested_followers_id: []
+        };
+
+        setProfile(profile);
+        setCurrentUserConnections(connections);
+      } catch (error) {
+        console.error("Error loading user data:", error);
       } finally {
         if (mounted) setLoading(false);
       }
     })();
     return () => { mounted = false; };
-    // }, []);?
   }, [user]);
 
   const completion = useMemo(() => computeProfileCompletion(profile), [profile]);
-
+  console.log("Coonnections", currentUserConnections)
   const saveProfile = async (partial) => {
     console.log("Save Profile...")
     if (!user) return;
@@ -83,7 +100,7 @@ export const UserProfileProvider = ({ children }) => {
 
   return (
     <UserProfileContext.Provider
-      value={{ user, profile, setProfile, loading, saving, completion, saveProfile, uploadAvatar }}
+      value={{ user, profile, setProfile, loading, saving, completion, saveProfile, uploadAvatar, currentUserConnections }}
     >
       {children}
     </UserProfileContext.Provider>

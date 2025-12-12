@@ -257,7 +257,7 @@ export default function EventCreateScreen({ navigation }) {
 
   // ---- Submit ----
   const onSubmit = async (values) => {
-    console.log("VALID EVENT SUBMIT:", JSON.stringify(values, null, 2));
+    // console.log("VALID EVENT SUBMIT:", JSON.stringify(values, null, 2));
 
     // Required: venue per mode
     if (values.venue.mode === "online") {
@@ -325,14 +325,14 @@ export default function EventCreateScreen({ navigation }) {
       Alert.alert("Success", "Event created.");
       navigation?.goBack?.();
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       Alert.alert("Error", "Failed to create event. Please try again.");
     }
   };
 
   const onInvalid = (errs) => {
-    console.log("INVALID EVENT SUBMIT:", JSON.stringify(getValues(), null, 2));
-    console.log("EVENT ERRORS:", JSON.stringify(errs, null, 2));
+    // console.log("INVALID EVENT SUBMIT:", JSON.stringify(getValues(), null, 2));
+    // console.log("EVENT ERRORS:", JSON.stringify(errs, null, 2));
     Alert.alert("Validation", "Please fix the highlighted fields.");
   };
 
@@ -657,11 +657,11 @@ export default function EventCreateScreen({ navigation }) {
       <Pressable
         disabled={isSubmitting}
         onPress={handleSubmit(onSubmit, (e) => {
-          console.log(
-            "INVALID EVENT SUBMIT:",
-            JSON.stringify(getValues(), null, 2)
-          );
-          console.log("EVENT ERRORS:", JSON.stringify(e, null, 2));
+          // console.log(
+          //   "INVALID EVENT SUBMIT:",
+          //   JSON.stringify(getValues(), null, 2)
+          // );
+          // console.log("EVENT ERRORS:", JSON.stringify(e, null, 2));
           Alert.alert("Validation", "Please fix the highlighted fields.");
         })}
         className={`h-12 rounded-2xl ${backgroundColor.buttonPrimary} ${border.primary} items-center justify-center mb-8`}

@@ -8,12 +8,10 @@ import {
   Modal,
   Platform,
   Pressable,
-  ScrollView,
   Text,
   TextInput,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import AuthContext from "../contexts/AuthContext";
 import { createJobReferral } from "../services/jobReferralService";
@@ -22,13 +20,13 @@ import Dropdown from "../components/Dropdown";
 import LocationPicker from "../components/Location/LocationPicker";
 import MultiEntryList from "../components/profile/MultiEntryList";
 
+import { ScreenScroll } from "../components/layout/Screen";
 import {
   CURRENCY_OPTIONS,
   POSITION_OPTIONS,
   SALARY_PERIOD_OPTIONS,
   WORK_MODE_OPTIONS,
 } from "../constants/JobConstant";
-import { ScreenScroll } from "../components/layout/Screen";
 
 export default function JobReferralCreateScreen({ navigation }) {
   const { user } = useContext(AuthContext) || {};
@@ -179,7 +177,7 @@ export default function JobReferralCreateScreen({ navigation }) {
   // ---- Submit handlers ----
   const onSubmit = async (values) => {
     // will only run when form is valid
-    console.log("VALID SUBMIT values:", JSON.stringify(values, null, 2));
+    // console.log("VALID SUBMIT values:", JSON.stringify(values, null, 2));
 
     // extra guards (kept from your logic)
     const amountNum = Number(values.salary?.amount);
@@ -222,7 +220,7 @@ export default function JobReferralCreateScreen({ navigation }) {
       Alert.alert("Success", "Job referral created.");
       navigation?.goBack?.();
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       Alert.alert("Error", "Failed to create job referral. Please try again.");
     }
   };
@@ -230,11 +228,11 @@ export default function JobReferralCreateScreen({ navigation }) {
   const onInvalid = (formErrors) => {
     // will run when form is invalid
     const currentValues = getValues();
-    console.log(
-      "INVALID SUBMIT values:",
-      JSON.stringify(currentValues, null, 2)
-    );
-    console.log("ERRORS:", JSON.stringify(formErrors, null, 2));
+    // console.log(
+    //   "INVALID SUBMIT values:",
+    //   JSON.stringify(currentValues, null, 2)
+    // );
+    // console.log("ERRORS:", JSON.stringify(formErrors, null, 2));
     Alert.alert("Validation", "Please fix the highlighted fields.");
   };
 

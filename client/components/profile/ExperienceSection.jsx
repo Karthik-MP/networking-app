@@ -1,14 +1,15 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { Text, View } from "react-native";
 import { useTheme } from "../../hooks/useTheme"; // ✅ useTheme instead of ThemeContext
 import { useUserProfile } from "../../hooks/useUserProfile";
 import { EditorModalLayout } from "../EditorModalLayout";
+import { showToast } from "../toast";
 import ExperienceEditor from "./ExperienceEditor";
 import SectionCard from "./SectionCard";
-import { showToast } from "../toast";
 
-export default function ExperienceSection() {
-  const { profile, saveProfile } = useUserProfile();
+export default function ExperienceSection({ profileData, isCurrentUser }) {
+  const { profile: currentUserProfile, saveProfile } = useUserProfile();
+  const [profile] = useState(profileData || currentUserProfile);
   const [open, setOpen] = useState(false);
   const rows = profile?.experience || [];
   const { textColor } = useTheme();
@@ -82,7 +83,10 @@ export default function ExperienceSection() {
 
   return (
     <>
-      <SectionCard title="Experience" onEdit={() => setOpen(true)}>
+      <SectionCard
+        title="Experience"
+        onEdit={isCurrentUser ? () => setOpen(true) : false}
+      >
         {rows.length === 0 ? (
           <Text className={`text-sm ${textColor.secondary}`}>
             Add your experience

@@ -1,22 +1,32 @@
 // client/components/ProfileAvatar.jsx
-import React, { useState } from "react";
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  ActivityIndicator,
-  Text,
-  StyleSheet,
-} from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { useUserProfile } from "../hooks/useUserProfile";
 import { auth } from "../services/firebase";
 import ImageProcessor from "./ImageProcessor";
 
-export default function ProfileAvatar({ size = 100, showCompletion = true }) {
-  const { profile, uploadAvatar, completion } = useUserProfile();
+export default function ProfileAvatar({
+  size = 100,
+  profileData,
+  isCurrentUser,
+}) {
+  const {
+    profile: currentUserProfile,
+    uploadAvatar,
+    completion,
+  } = useUserProfile();
   const [busy, setBusy] = useState(false);
+
+  const profile = profileData || currentUserProfile;
 
   const onPick = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -36,9 +46,9 @@ export default function ProfileAvatar({ size = 100, showCompletion = true }) {
       setBusy(true);
       const uri = result.assets?.[0]?.uri;
       if (uri) await uploadAvatar(uri);
-    } catch(error){
+    } catch (error) {
       console.error("Error uploading avatar", error);
-    }finally {
+    } finally {
       setBusy(false);
     }
   };
@@ -49,7 +59,11 @@ export default function ProfileAvatar({ size = 100, showCompletion = true }) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={onPick} disabled={busy} activeOpacity={0.8}>
+      <TouchableOpacity
+        onPress={isCurrentUser && onPick}
+        disabled={busy}
+        activeOpacity={0.8}
+      >
         <AnimatedCircularProgress
           size={size}
           width={6}
@@ -109,7 +123,7 @@ export default function ProfileAvatar({ size = 100, showCompletion = true }) {
         />
       )}
 
-      {showCompletion && (
+      {isCurrentUser && (
         <View style={styles.textWrapper}>
           {/* <Text style={styles.completionText}>{completion}% complete</Text> */}
           {!uri && (

@@ -1,14 +1,14 @@
 // hooks/useTheme.ts
-import { useContext } from "react";
-import { ThemeContext } from "@contexts/ThemeContext";
 import { LightTheme } from "@constants/theme";
+import { ThemeContext } from "@contexts/ThemeContext";
+import { useContext } from "react";
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
-  
+
   // Provide a fallback during initial render
   if (!context) {
-    console.warn("useTheme: ThemeContext is undefined. Using LightTheme as fallback.");
+    // console.warn("useTheme: ThemeContext is undefined. Using LightTheme as fallback.");
     return {
       dark: false,
       colors: LightTheme.colors,
@@ -25,7 +25,7 @@ export const useTheme = () => {
   const { theme, scheme, setScheme, toggle } = context;
 
   if (!theme) {
-    console.warn("useTheme: theme is undefined in context. Using LightTheme as fallback.");
+    // console.warn("useTheme: theme is undefined in context. Using LightTheme as fallback.");
     return {
       dark: false,
       colors: LightTheme.colors,

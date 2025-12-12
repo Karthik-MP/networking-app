@@ -1,17 +1,16 @@
+import Header from "@components/layout/Header";
+import { APP_ROUTES } from "@constants/routes";
 import { Ionicons } from "@expo/vector-icons";
 import Entypo from "@expo/vector-icons/Entypo";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
-import { Suspense, useCallback, useState } from "react";
-
-import { APP_ROUTES } from "@constants/routes";
-
-import Header from "@components/layout/Header";
 import DashboardScreen from "@screens/DashboardScreen";
 import ProfileScreen from "@screens/ProfileScreen";
+import { Suspense, useCallback, useState } from "react";
 import CreateMenuSheet from "../components/CreateMenuSheet";
 import { useTheme } from "../hooks/useTheme";
 import JobStack from "./JobStack";
+import NetworkStack from "./NetworkStack";
 // import EventCreateScreen from "../screens/EventCreateScreen";
 
 const Tab = createBottomTabNavigator();
@@ -103,11 +102,11 @@ export default function TabNavigator() {
 
         <Tab.Screen
           name={APP_ROUTES.MY_NETWORK}
-          component={ProfileScreen}
+          component={NetworkStack}
           options={{
-            headerShown: false,
             tabBarIcon: ({ focused, color, size }) =>
               renderIcon("entypo", focused, color, size, "network"),
+            headerLeft: () => defaultHeaderLeft(navigation),
           }}
         />
 

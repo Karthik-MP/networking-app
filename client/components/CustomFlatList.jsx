@@ -8,6 +8,7 @@ export default function CustomFlatList({
   name,
   queryKey,
   Component,
+  componentOnPressFn,
   collection_name,
   constraints = [],
 }) {
@@ -68,7 +69,7 @@ export default function CustomFlatList({
     <FlatList
       data={flatData}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <Component item={item} />}
+      renderItem={({ item }) => <Component item={item} onPressFn={componentOnPressFn}/>}
       contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
       onEndReached={loadMore}
       onEndReachedThreshold={0.5}

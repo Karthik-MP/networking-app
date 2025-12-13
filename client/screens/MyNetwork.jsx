@@ -31,12 +31,12 @@ const Card = ({ item }) => {
   return (
     <TouchableOpacity onPress={handlePress}>
       <View
-        className={`${backgroundColor.cardPrimary} p-5 rounded-2xl mx-2 mb-4`}
+        className={`${backgroundColor.cardPrimary} p-5 rounded-3xl mx-2 mb-4`}
       >
         {/* User row */}
         <View className="flex-row items-center space-x-4">
           {/* Profile Image */}
-          <View className="w-16 h-16 rounded-full overflow-hidden mx-2">
+          <View className="w-16 h-16 rounded-full overflow-hidden mx-1">
             <Image
               source={item?.photoURL ? { uri: item.photoURL } : defaultImage}
               className="w-full h-full"

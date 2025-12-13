@@ -61,7 +61,7 @@ export default function ProfileScreen({ route }) {
     } else if (
       currentUserConnections?.requested_followers_id?.includes(profileData?.uid)
     ) {
-      setConnectionStatus("Cancel");
+      setConnectionStatus("Withdraw");
     } else {
       setConnectionStatus("Connect");
     }
@@ -69,7 +69,7 @@ export default function ProfileScreen({ route }) {
 
   const onConnect = async () => {
     try {
-      if (connectionStatus === "Cancel") {
+      if (connectionStatus === "Withdraw") {
         // Remove connection request
         await removeConnection(user?.uid, profileData?.uid);
         setConnectionStatus("Connect"); // Update status immediately
@@ -78,7 +78,7 @@ export default function ProfileScreen({ route }) {
       } else {
         // Add connection request
         await addConnections(user?.uid, profileData?.uid);
-        setConnectionStatus("Cancel"); // Update status immediately
+        setConnectionStatus("Withdraw"); // Update status immediately
         showToast("success", "Connection request sent");
         console.log(`Connection successfully added`);
       }
@@ -93,17 +93,18 @@ export default function ProfileScreen({ route }) {
     <ScreenScroll className="mx-6">
       <ProfileHeader profileData={profileData} isCurrentUser={isCurrentUser} />
       {/* {completion != 100 && <Button title="Complete Profile" type="primary" onPressFunction={() => navigation.navigate("CompleteProfile")} />} */}
-      <View style={{ height: 12 }} />
       {!isCurrentUser && (
-        <Pressable
-          onPress={onConnect}
-          className={`rounded-2xl py-4 w-36 items-center mb-4 ${backgroundColor?.buttonPrimary}`}
-        >
-          {/* Button text is always white to match violet pill in mock */}
-          <Text className="text-base font-bold text-white">
-            {connectionStatus}
-          </Text>
-        </Pressable>
+        <View className="flex-1 justify-center items-center">
+          <Pressable
+            onPress={onConnect}
+            className={`rounded-2xl py-4 w-36 items-center mb-4 ${connectionStatus === "Connect" ? backgroundColor?.buttonPrimary : backgroundColor?.buttonDanger}`}
+          >
+            {/* Button text is always white to match violet pill in mock */}
+            <Text className="text-base font-bold text-white">
+              {connectionStatus}
+            </Text>
+          </Pressable>
+        </View>
       )}
       <PersonalSection
         profileData={profileData}
@@ -126,9 +127,13 @@ export default function ProfileScreen({ route }) {
         profileData={profileData}
         isCurrentUser={isCurrentUser}
       />
-      <View style={{ height: 24 }} />
+
       {isCurrentUser && (
-        <Button title="Sign out" type="secondary" onPressFunction={logout} />
+        <Button
+          title="Sign out"
+          type={backgroundColor?.buttonDanger}
+          onPressFunction={logout}
+        />
       )}
     </ScreenScroll>
   );

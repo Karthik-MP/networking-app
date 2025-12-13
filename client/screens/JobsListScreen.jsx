@@ -14,13 +14,14 @@ export default function JobsListScreen({ navigation }) {
   ];
 
   const openDetail = (job) => {
-    navigation.navigate("JobDetail", { jobId: job.id, job });
+    navigation.navigate("JobDetail", { jobId: job.id });
   };
 
   return (
     <CustomFlatList
       queryKey={"jobs"}
       Component={JobCard}
+      componentOnPressFn={openDetail}
       collection_name={"job_referrals"}
       constraints={constraints}
     />

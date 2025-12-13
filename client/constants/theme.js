@@ -7,7 +7,7 @@ export const LightTheme = {
   // 👇 React Navigation theme shape
   colors: {
     primary: "#8b5cf6",      // violet-600
-    background: "#f8fafc",   // slate-50
+    background: "#F8F8F8",   // light gray background
     card: "#ffffff",         // white
     text: "#020617",         // slate-950
     border: "#e5e7eb",       // gray-200
@@ -31,6 +31,7 @@ export const LightTheme = {
     cardSecondary: "bg-slate-100", // subtle cards
     buttonPrimary: "bg-violet-600",
     buttonSecondary: "bg-slate-300",
+    buttonDanger: "bg-red-600",
     input: "bg-white",
   },
 
@@ -78,6 +79,7 @@ export const DarkTheme = {
     cardSecondary: "bg-slate-800", // subtle cards
     buttonPrimary: "bg-violet-600",
     buttonSecondary: "bg-gray-200",
+    buttonDanger: "bg-red-700",
     input: "bg-slate-900",
   },
 

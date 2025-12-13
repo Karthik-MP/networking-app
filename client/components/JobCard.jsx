@@ -17,9 +17,10 @@ function formatSalary(salary) {
   return `${symbol}${pretty}/${per}`;
 }
 
-export default function JobCard({ item }) {
+export default function JobCard({ item, onPressFn }) {
   // Support both 'job' and 'item' props for flexibility
-  const title = `${item?.position || ""}`.trim();
+  console.log(item?.position);
+  const title = item?.position
   const company = item?.company?.name || "";
   const locations = (item?.company?.locations || []).join(" • ");
   const workMode = item?.workMode ? ` • ${item.workMode}` : "";
@@ -28,10 +29,11 @@ export default function JobCard({ item }) {
 
   return (
     <Pressable
+      onPress={() => onPressFn(item)}
       className={`rounded-2xl p-4 mb-3 ${backgroundColor.cardPrimary}`}
     >
       <Text
-        className={`text-lg font-semibold ${textColor.primary}`}
+        className={`text-lg font-semibold text-black`}
         numberOfLines={1}
       >
         {title}
@@ -55,14 +57,14 @@ export default function JobCard({ item }) {
           <Text className={`${textColor.secondary} ml-1`}>{salary}</Text>
         </View>
       )}
-      {item?.jobDescription && (
+      {/* {item?.jobDescription && (
         <Text
           className={`${textColor.tertiary} text-sm mt-2`}
           numberOfLines={2}
         >
           {item.jobDescription}
         </Text>
-      )}
+      )} */}
     </Pressable>
   );
 }

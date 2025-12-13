@@ -29,21 +29,18 @@ function formatSalary(salary) {
 export default function JobDetailScreen({ route }) {
   const { textColor, border, backgroundColor } = useTheme();
 
-  const { jobId, job: initialJob } = route.params || {};
-  const [job, setJob] = useState(initialJob || null);
+  const jobId = route?.params?.jobId;
+  const [job, setJob] = useState(null);
+  // console.log("jobId", jobId);
 
   useEffect(() => {
-    let active = true;
-    const load = async () => {
+    const load = async (jobId) => {
       if (!jobId) return;
       const snap = await getDoc(doc(db, "job_referrals", jobId));
-      if (snap.exists() && active) setJob({ id: snap.id, ...snap.data() });
+      if (snap.exists()) setJob({ id: snap.id, ...snap.data() });
     };
-    if (!initialJob) load();
-    return () => {
-      active = false;
-    };
-  }, [jobId, initialJob]);
+    load(jobId);
+  }, [jobId]);
 
   const salary = useMemo(() => formatSalary(job?.salary), [job]);
 
@@ -73,67 +70,85 @@ export default function JobDetailScreen({ route }) {
   return (
     <ScrollView
       contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
-      className={` ${backgroundColor.primary}`}
+      className={`${backgroundColor.primary}`}
     >
-      <Text
-        className={`text-xl font-semibold ${textColor.primary}`}
-        numberOfLines={2}
-      >
-        {job.position}
-      </Text>
-      <Text className={`${textColor.primary} mt-1`}>
-        {job.company?.name || ""}
-      </Text>
-
-      <View className="flex-row items-center mt-2">
-        <Ionicons name="location-outline" size={16} color="#6b7280" />
+      {/* White card container */}
+      <View className={`${backgroundColor.cardPrimary} rounded-2xl p-5`}>
+        {/* Job Title */}
         <Text
-          className={`${textColor.secondary} ml-1 flex-1`}
+          className={`text-2xl font-bold ${textColor.primary}`}
           numberOfLines={2}
         >
-          {(job.company?.locations || []).join(" • ") || "—"}
+          {job.position}
         </Text>
+
+        {/* Company Name */}
+        <Text className={`${textColor.primary} text-lg text-purple-800 font-bold mt-1`}>
+          {job.company?.name || ""}
+        </Text>
+
+        {/* Location */}
+        <View className="flex-row items-center mt-3">
+          <Ionicons name="location-outline" size={18} color="#6b7280" />
+          <Text
+            className={`${textColor.secondary} ml-2 flex-1 text-lg`}
+            numberOfLines={2}
+          >
+            {(job.company?.locations || []).join(" • ") || "—"}
+          </Text>
+        </View>
+
+        {/* Work Mode */}
+        {!!job.workMode && (
+          <View className="flex-row items-center mt-2">
+            <Ionicons name="briefcase-outline" size={18} color="#6b7280" />
+            <Text className={`${textColor.secondary} ml-2 text-lg`}>
+              {job.workMode}
+            </Text>
+          </View>
+        )}
+
+        {/* Salary */}
+        {!!salary && (
+          <View className="flex-row items-center mt-2">
+            <Ionicons name="cash-outline" size={18} color="#6b7280" />
+            <Text className={`${textColor.secondary} ml-2 text-lg`}>
+              {salary}
+            </Text>
+          </View>
+        )}
+
+        {/* Divider */}
       </View>
-
-      {!!job.workMode && (
-        <View className="flex-row items-center mt-2">
-          <Ionicons name="briefcase-outline" size={16} color="#6b7280" />
-          <Text className={`${textColor.secondary} ml-1`}>{job.workMode}</Text>
-        </View>
-      )}
-
-      {!!salary && (
-        <View className="flex-row items-center mt-2">
-          <Ionicons name="cash-outline" size={16} color="#6b7280" />
-          <Text className={`${textColor.secondary} ml-1`}>{salary}</Text>
-        </View>
-      )}
-
-      <View className={`h-px border ${border.primary} my-4`} />
-
-      <Text className={`text-lg font-semibold mb-2 ${textColor.secondary}`}>
-        About the job
-      </Text>
-      <Text
-        className={`${textColor.secondary} leading-6`}
-        style={{ lineHeight: 20 }}
-      >
-        {job.jobDescription || "No description provided."}
-      </Text>
-
-      <View className="mt-6 flex-row gap-3">
-        <Pressable
-          onPress={openExternal}
-          className={`px-4 py-3 rounded-xl ${backgroundColor.buttonSecondary}`}
+      <View className={`${backgroundColor.cardPrimary} rounded-2xl p-5 mt-5`}>
+        {/* About the job section */}
+        <Text className={`text-lg font-semibold mb-2 ${textColor.primary}`}>
+          About the job
+        </Text>
+        <Text
+          className={`${textColor.secondary} text-lg`}
+          style={{ lineHeight: 22 }}
         >
-          <Text className="text-black">Open Job Link</Text>
-        </Pressable>
-        <Pressable
-          onPress={onApply}
-          className={`px-4 py-3 rounded-xl ${backgroundColor.buttonPrimary}`}
-        >
-          <Text className="text-white">Apply</Text>
-        </Pressable>
+          {job.jobDescription || "No description provided."}
+        </Text>
+
+        {/* Action Buttons */}
+        <View className="mt-6 flex-row gap-3">
+          <Pressable
+            onPress={openExternal}
+            className={`px-5 py-3 rounded-xl ${backgroundColor.cardSecondary}`}
+          >
+            <Text className={`${textColor.primary} font-medium`}>
+              Open Job Link
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={onApply}
+            className={`px-5 py-3 rounded-xl ${backgroundColor.buttonPrimary}`}
+          >
+            <Text className="text-white font-medium">Apply</Text>
+          </Pressable>
+        </View>
       </View>
     </ScrollView>
   );

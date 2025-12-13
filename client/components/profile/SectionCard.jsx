@@ -4,9 +4,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 export default function SectionCard({ title, onEdit, children, right }) {
   const { textColor, border, backgroundColor } = useTheme();
   return (
-    <View
-      className={`rounded-3xl p-4 mb-4 border ${border.primary} ${backgroundColor.cardPrimary}`}
-    >
+    <View className={`rounded-3xl p-4 mb-4 ${backgroundColor.cardPrimary}`}>
       {/* Header Row */}
       <View className="flex-row items-center justify-between mb-2">
         <Text className={`text-lg font-semibold ${textColor.primary}`}>

@@ -282,14 +282,6 @@ Contributions are welcome! Please follow these steps:
 ### Build Commands
 Refer to `client/build_commands.md` for Android build instructions and EAS build configuration.
 
-## 📄 License
-
-[Add your license here]
-
-## 📧 Contact
-
-[Add your contact information here]
-
 ---
 
 **Note**: This is a community-focused networking application specifically designed for Indian professionals in the tech industry to help each other through referrals, networking, and mentorship opportunities.

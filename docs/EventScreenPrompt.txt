@@ -1,0 +1,48 @@
+Now Create a form to create events [Events can be meetup, Functions, Knowledge Sharing]
+    - Event Name 
+    - Event Venue {use Location Picker component} [Online, in person]
+        [if Online Meeting Links]
+    - Event Time and Date 
+    - Event Posters multipe is allowed [Can be only Jpeg, png]
+    - Event Description
+    - Host Name
+    - Guest [Optional]
+    - User Must be able to register
+    - Limit number of spots
+    - option to disable commeting
+    - Post form is filled displayed a inviation link so we can inviate people to register
+
+In the dashboard I need to display these event additionally
+    - When loading post or event show swimmers
+    - Who posted it 
+    - I need button like 
+        a. reactions : [Like, Insightful, Interested] 
+        b. Comments [users can add comments]
+        c. Share/Inviation [Whatsapp, facebook]
+
+
+1. types: that all for now as top of mind
+2. Time ask user to enter time zone
+3.  Recurring events: [maybe in future not now]
+4. Venue mode: yes
+5. Keep object
+6. Yes
+7. Max Size: 3 MB
+8. Ask user to provide only jgp as of now, no need to conversion
+9. yes
+10. Yes
+11. Field not need because the we have already collect users details
+12. Yes
+13. Later will send reminders
+14. Yes
+15. let us implement comment later  not now just give a dummy button for comments
+16. . let us implement comment later not now
+17. let us implement Invite link later
+18. Create share button do not implement share thing yet create dummy button
+19. Later
+20. okay
+21. Yes added status give options to edit, add timestamp of created and modified, if cancelled ask for reason of cancellation
+22. Yes [create reuseable swimmers or skeleton swimmers]
+23 & 24. sort order and pagination we discuss later now display events when user reaches down load more posts
+25. sounds good
+26. sounds good

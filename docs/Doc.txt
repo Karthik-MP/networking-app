@@ -1,0 +1,49 @@
+user object: https://excalidraw.com/#json=OU1GjLcPzHq5-lsH2JxyQ,41I5Gq6LKuGAWxdMKs6L0g
+- commands
+    - E:\Project\networking-app\client>dir /b /s | findstr /v /i "node_modules build dist .git .expo .vscode .env"
+I am building a react native app for networking specific to Indians community where green card holder or h1-b holder with xyz position can post a job which they can refer and student or Indians without job  and can ask for referral based on company job opening listed on job platforms 
+The tech stack  is 
+    - React native, nativewind, toaster for error display
+    - Node.js
+    - Firebase for data storage
+
+This is the current project structures
+    client\app, client\app.json, client\App.jsx, client\assets, client\babel.config.js, client\components, client\context, client\eslint.config.js, client\expo-env.d.ts, client\global.css, client\index.js, client\metro.config.js, client\nativewind-env.d.ts, client\navigation, client\package-lock.json, client\package.json, client\README.md, client\screens, client\services, client\tailwind.config.js, client\tsconfig.json, client\app\(tabs), client\app\(tabs)\_layout.tsx, client\assets\avatar.jpg, client\assets\logo.png, client\components\Button.jsx, client\components\CommunityCard.js, client\components\EventCard.js, client\components\PostCard.js, client\components\ProfileAvatar.jsx, client\context\AuthContext.js, client\navigation\AuthStack.js, client\navigation\ProfileStack.js, client\navigation\TabNavigator.js, client\screens\DashboardScreen.js, client\screens\EventsScreen.js, client\screens\LoginScreen.js, client\screens\MentorshipScreen.js, client\screens\Profile, client\screens\ProfileScreen.js, client\screens\SignupScreen.js, client\screens\WelcomeScreen.js, client\screens\Profile\EducationForm.jsx, client\screens\Profile\ExperienceForm.jsx, client\screens\Profile\InterestsForm.jsx, client\screens\Profile\ProfileForm.jsx, client\screens\Profile\SocialLinksForm.jsx, client\services\api.js, client\services\AuthServices.js, client\services\firebase.js
+
+This is mine tab button in app  
+    - Dashboard, Events, Mentorship, Profile
+What completed 
+    - Login
+    - SignupScreen 
+
+Your Job is come with amazing, interactive, visualling appealing UI components which is asked for now, I you get doubt required input file ask me 
+
+PROMPT 4: Firebase Upload Logic for Resume and Profile Pic
+
+I want users to upload a resume (PDF) to complete their profile. The file should be stored in Firebase Storage under /resumes/{uid}.pdf.
+
+Also, allow uploading a profile picture to /avatars/{uid}.jpg, and compress it before upload.
+
+Please:
+
+Show how to upload both files using Firebase SDK (v9 modular).
+
+Provide a simple UI for file upload and progress.
+
+Return and store the download URL in Firestore under the user's document.
+
+
+
+Job referral
+    - Job Title
+    - company object {name, locations, industry} object
+    - position [ give option in Dropdown, others]
+    - dropdown [remote, hybrid, onsite]
+    - salary
+    - job description
+    - number of applicants for referral
+    - link to job 
+    - deadline for referral 
+    - job deadline
+
+    This need to be saved in firebase database create new collection and add user who created this job referral
